@@ -247,3 +247,69 @@ export const formatDateToBR = (dateString) => {
         year: 'numeric' 
     });
 };
+
+// Formata número de telefone proveniente do BD (varchar)
+export function formatarTelefone(valor) {
+  if (!valor) return '';
+
+  // Remove tudo que não for dígito
+  const numeros = valor.replace(/\D/g, '');
+
+  // Se não sobrar dígito, devolve original
+  if (numeros.length === 0) return valor;
+
+  // Celular com DDD → 11 dígitos
+  if (numeros.length === 11) {
+    const ddd = numeros.slice(0, 2);
+    const parte1 = numeros.slice(2, 7);
+    const parte2 = numeros.slice(7);
+    return `(${ddd}) ${parte1}-${parte2}`;
+  }
+
+  // Fixo com DDD → 10 dígitos
+  if (numeros.length === 10) {
+    const ddd = numeros.slice(0, 2);
+    const parte1 = numeros.slice(2, 6);
+    const parte2 = numeros.slice(6);
+    return `(${ddd}) ${parte1}-${parte2}`;
+  }
+
+  // Celular sem DDD → 9 dígitos
+  if (numeros.length === 9) {
+    return `${numeros.slice(0, 5)}-${numeros.slice(5)}`;
+  }
+
+  // Fixo sem DDD → 8 dígitos
+  if (numeros.length === 8) {
+    return `${numeros.slice(0, 4)}-${numeros.slice(4)}`;
+  }
+
+  // Se tiver outro formato, devolve original sem mexer
+  return valor;
+}
+
+// Formata data proveniente do BD (ISO 8601) para formato brasileiro (DD/MM/YYYY)
+export function formatarDataBR(dataISO) {
+  if (!dataISO) return '';
+
+  const data = new Date(dataISO);
+  if (isNaN(data)) return dataISO; // se não for data válida, retorna como está
+
+  return data.toLocaleDateString('pt-BR', {
+    timeZone: 'UTC'  // evita problemas de fuso horário
+  });
+}
+// Formata hora proveniente do BD (ISO 8601) para formato brasileiro (HH:MM)
+export function formatarHoraBR(dataISO) {
+  if (!dataISO) return '';
+
+  const data = new Date(dataISO);
+  if (isNaN(data)) return dataISO;
+
+  return data.toLocaleTimeString('pt-BR', {
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'UTC' // impede variação de fuso
+  });
+}
+

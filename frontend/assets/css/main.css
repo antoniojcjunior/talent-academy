@@ -1,0 +1,59 @@
+/* Fundo geral do app (estilo admin) */
+body {
+  background-color: #f3f4f6;
+}
+
+
+/* ---------- TÍTULOS ---------- */
+
+h1,
+.h4 {
+  letter-spacing: 0.02em;
+}
+
+
+.btn-outline-secondary {
+  background-color: #d7dadf;
+  color: #2D3748;
+}
+
+.btn-editar,
+.btn-detalhar,
+.btn-deletar {
+  border: none;
+  /* Se o botão for do tipo 'outline' (ex: .btn-outline-secondary), 
+     o Bootstrap pode estar aplicando uma sombra para simular a borda.
+     Se for o caso, adicione: */
+  box-shadow: none;
+  /* Recomendação: Se você quiser apenas um ícone sem fundo, 
+     também é bom tirar o background do botão: */
+  background-color: transparent; 
+}
+
+/* Wrapper do Tom Select com cara de form-select-sm */
+.ts-bootstrap.ts-wrapper .ts-control {
+  height: calc(1.5em + 0.5rem + 2px);   /* mesma conta do .form-select-sm */
+  min-height: calc(1.5em + 0.5rem + 2px);
+  padding: 0.25rem 0.5rem;              /* padding do form-select-sm */
+  font-size: 0.875rem;                  /* fonte do form-select-sm */
+  line-height: 1.5;
+  border-radius: 0.2rem;                /* raio do -sm */
+  box-sizing: border-box;
+}
+
+
+/* Evitar que um único item/tags aumente a altura inicial */
+.ts-bootstrap.ts-wrapper .ts-control > .item {
+  margin-bottom: 0;
+}
+
+/* Input interno (onde digita/busca) mais compacto */
+.ts-bootstrap.ts-wrapper .ts-control input {
+  height: 1.5rem;
+  padding: 0;
+  margin: 0;
+}
+
+.form-control-plaintext {
+  background-color: #f8f9fa;
+}

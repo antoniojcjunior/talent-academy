@@ -1,0 +1,28 @@
+/* WRAPPER gerado pelo Tom Select */
+.ts-wrapper.ts-bootstrap .ts-control {
+  height: calc(1.5em + 0.5rem + 2px); /* altura EXATA do form-select-sm */
+  min-height: calc(1.5em + 0.5rem + 2px);
+  padding: 0.25rem 0.5rem;           /* padding do form-select-sm */
+  font-size: 0.875rem;               /* fonte do form-select-sm */
+  line-height: 1.5;
+  border-radius: 0.25rem;
+  box-sizing: border-box;
+}
+
+/* evita que itens/tags aumentem a altura */
+.ts-wrapper.ts-bootstrap .ts-control > .item {
+  margin-bottom: 0 !important;
+}
+
+/* input interno — evita aumentar altura */
+.ts-wrapper.ts-bootstrap .ts-control input {
+  height: 1.2rem !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* quando o componente estiver vazio, placeholder deve caber na altura */
+.ts-wrapper.ts-bootstrap.has-items .ts-control {
+  height: auto;        /* deixa crescer só quando houver tags */
+  min-height: 31px;    /* altura base */
+}

@@ -1,0 +1,116 @@
+/* Estado normal (aberta) */
+#sidebar {
+  width: 220px;            /* largura da sidebar aberta */
+  transition: width 0.3s ease;
+}
+
+/* Estado recolhida (só ícones) */
+#sidebar.collapsed {
+  width: 50px;             /* só uma coluninha de ícones */
+}
+
+/* Wrapper visual da sidebar escura */
+.sidebar-dark {
+  background-color: #2D3748;
+  color: #e2e8f0;
+}
+
+/* Links do menu lateral */
+.sidebar-menu .nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 1rem;
+  border-radius: 0.5rem;
+  color: #e2e8f0;
+  width: 100%;
+  transition: background-color 0.2s ease; /* só cor, sem width/margin/padding */
+}
+
+/* Hover dos links */
+.sidebar-menu .nav-link:hover {
+  background-color: #3B4757;
+  color: #ffffff;
+}
+
+/* Estado ativo (página atual) */
+.sidebar-menu .nav-link.active {
+  background-color: #4A5568;      /* fundo suave para destacar */
+  color: #ffffff !important;      /* texto branco */
+  font-weight: 600;               /* negrito moderado */
+  border-radius: 0.5rem;          /* bordas arredondadas */
+} 
+
+/* Ícone do item ativo */
+.sidebar-menu .nav-link.active i {
+  color: #ffffff;
+}
+
+/* Título de seção da sidebar (ex: "Cadastros") */
+.sidebar-title {
+  color: #CBD5E1;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  padding: 0.5rem 0.75rem;
+  transition: all 0.2s ease;
+}
+
+/*oculta o titulo CADASTROS quando colapsado*/
+#sidebar.collapsed .sidebar-title { 
+  font-size: 0;    
+  padding: 0.5rem 0.75rem; /* mantém a altura vertical normal */
+}
+
+#sidebar.collapsed .sidebar-title::before {
+  content: "•";          /* aqui você pode trocar por "C" se preferir */
+  font-size: 0.75rem;    /* mesmo tamanho de antes */
+  color: transparent;
+}
+
+/* Texto do label ao lado do ícone */
+.sidebar-text {
+  transition: opacity 0.2s ease, width 0.2s ease;
+  white-space: nowrap;
+}
+
+/* Quando sidebar estiver colapsada: esconder texto */
+#sidebar.collapsed .sidebar-text {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+}
+
+.sidebar-menu .nav-link:hover {
+  background-color: #3B4757;
+  color: #ffffff;
+}
+
+.sidebar-menu .nav-link.active i {
+  color: #ffffff;
+}
+
+/* Quando a sidebar estiver colapsada, centraliza os ícones */
+#sidebar.collapsed .sidebar-menu .nav-link {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto;
+  padding: 0 !important;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0 !important;              /* <-- anula o gap-2 da classe do HTML */
+}
+
+/* Diminui a caixa do item ativo no modo colapsado */
+#sidebar.collapsed .sidebar-menu .nav-link.active {
+  width: 40px;               /* tamanho da "bolinha" */
+  height: 40px;
+  margin: 0 auto;            /* centraliza dentro da sidebar */
+  border-radius: 999px;      /* vira círculo/pílula */
+  background-color: #4A5568;
+}
+
+#toggleSidebar {
+  padding: 0 !important; /* Usamos !important para garantir a sobrescrita do Bootstrap */
+}

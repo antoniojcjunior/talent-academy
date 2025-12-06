@@ -1,3 +1,5 @@
+import { API_BASE } from '../config.js';
+
 export async function carregarSelect({ url, selectId, labelCampo = 'nome', montarLabel }) {
   try {
     const resp = await fetch(url);
@@ -32,6 +34,60 @@ export async function carregarSelect({ url, selectId, labelCampo = 'nome', monta
     console.log(`${selectId} consultado com sucesso!`);
   } catch (err) {
     console.error(`Erro ao carregar ${selectId}:`, err);
+  }
+}
+
+export async function carregarSelectCidade() {
+  const selectUF = document.getElementById('uf');
+  const selectCidade = document.getElementById('cidade');
+
+  // Se não tiver os selects na página, não faz nada
+  if (!selectUF || !selectCidade) {
+    console.warn('Elementos #uf ou #cidade não encontrados no DOM.');
+    return;
+  }
+
+  // Função interna para atualizar o select de cidades
+  async function atualizarCidades(ufId) {
+    if (!ufId) {
+      selectCidade.innerHTML = '<option value="">Selecione</option>';
+      return;
+    }
+
+    try {
+      const resp = await fetch(`${API_BASE}/api/cidades/${ufId}`);
+
+      if (!resp.ok) {
+        console.error('Erro ao buscar cidades. Status:', resp.status);
+        selectCidade.innerHTML = '<option value="">Erro ao carregar cidades</option>';
+        return;
+      }
+
+      const cidades = await resp.json();
+
+      selectCidade.innerHTML = '<option value="">Selecione</option>';
+
+      cidades.forEach((c) => {
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = c.nome;
+        selectCidade.appendChild(opt);
+      });
+    } catch (erro) {
+      console.error('Erro de rede ao buscar cidades:', erro);
+      selectCidade.innerHTML = '<option value="">Erro ao carregar cidades</option>';
+    }
+  }
+
+  // Listener de mudança da UF
+  selectUF.addEventListener('change', async (e) => {
+    const ufId = e.target.value;
+    await atualizarCidades(ufId);
+  });
+
+  // Se já houver uma UF selecionada ao carregar a página, já carrega as cidades
+  if (selectUF.value) {
+    await atualizarCidades(selectUF.value);
   }
 }
 

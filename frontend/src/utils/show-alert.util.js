@@ -1,93 +1,88 @@
-// Pega os elementos do DOM
-const modalElement = document.getElementById('validationModal');
-const modalMessage = document.getElementById('modalMessage');
 
-// Elementos de Controle de Botões
-const confirmYesButton = document.getElementById('confirmYesButton');
-const confirmNoButton = document.getElementById('confirmNoButton');
-const alertOkButton = document.getElementById('alertOkButton');
+let modalElement;
+let modalMessage;
+let confirmYesButton;
+let confirmNoButton;
+let alertOkButton;
+let validationModal;
 
-export function showAlert(message) {
+function ensureModalInitialized() {
+  if (modalElement && modalMessage && confirmYesButton && confirmNoButton && alertOkButton && validationModal) {
+    return true;
+  }
 
-    // Garante que APENAS o botão OK apareça no modo Alerta.
-    confirmYesButton.style.display = 'none';    // Esconde o botão "Sim"
-    confirmNoButton.style.display = 'none';     // Esconde o botão "Não"
-    alertOkButton.style.display = 'inline-block'; // Garante que o botão "OK" apareça
-    // Injeta a mensagem no corpo do Modal
-    modalMessage.innerHTML = message;
+  modalElement = document.getElementById('validationModal');
+  modalMessage = document.getElementById('modalMessage');
+  confirmYesButton = document.getElementById('confirmYesButton');
+  confirmNoButton = document.getElementById('confirmNoButton');
+  alertOkButton = document.getElementById('alertOkButton');
 
-    const confirmationModal = new window.bootstrap.Modal(modalElement);
-    
-    return new Promise(resolve => {
-        
-        modalElement.addEventListener('shown.bs.modal', function onShown() {
-        const focoBotaoOk = document.getElementById('alertOkButton');
-        if (focoBotaoOk) {
-            // APLICA O FOCO com segurança, após o Bootstrap ter terminado de renderizar.
-            focoBotaoOk.focus();
-        }
-        // Remove o listener para não acumular
-        modalElement.removeEventListener('shown.bs.modal', onShown);
-        });
-        
-        // Exibe o modal
-        confirmationModal.show();
+  if (!modalElement || !modalMessage || !confirmYesButton || !confirmNoButton || !alertOkButton) {
+    console.error('Modal de validação não encontrado no DOM.');
+    return false;
+  }
 
-        // Listener para o botão 'Sim'
-        alertOkButton.onclick = () => {
-            confirmationModal.hide(); // Esconde o modal
-            resolve(true); // Resolve a Promise com TRUE (Confirmado)
-        };
-    });
+  validationModal = bootstrap.Modal.getOrCreateInstance(modalElement);
+  return true;
 }
 
-// Função de Confirmação
+export function showAlert(message) {
+  return new Promise((resolve) => {
+    if (!ensureModalInitialized()) {
+      alert(message);
+      return resolve();
+    }
+
+    // Modo ALERT: só o botão OK aparece
+    confirmYesButton.style.display = 'none';
+    confirmNoButton.style.display = 'none';
+    alertOkButton.style.display = 'inline-block';
+
+    modalMessage.innerHTML = message;
+
+    const onOk = () => {
+      alertOkButton.removeEventListener('click', onOk);
+      resolve();
+    };
+
+    alertOkButton.addEventListener('click', onOk);
+
+    validationModal.show();
+  });
+}
+
 export function showConfirm(message) {
-    // Esconde o botão 'OK' do showAlert e mostra os botões de confirmação
+  return new Promise((resolve) => {
+    if (!ensureModalInitialized()) {
+      const result = window.confirm(message); // fallback
+      return resolve(result);
+    }
+
+    // Modo CONFIRM: mostra SIM/NÃO, esconde OK
     alertOkButton.style.display = 'none';
     confirmYesButton.style.display = 'inline-block';
     confirmNoButton.style.display = 'inline-block';
 
-    // Seta a mensagem
     modalMessage.innerHTML = message;
-    
-    const confirmationModal = new window.bootstrap.Modal(modalElement);
-    
-    return new Promise(resolve => {
-       
-        modalElement.addEventListener('shown.bs.modal', function onShown() {
-        const focoBotaoYes = document.getElementById('confirmYesButton');
-        if (focoBotaoYes) {
-            // APLICA O FOCO com segurança, após o Bootstrap ter terminado de renderizar.
-            focoBotaoYes.focus();
-        }
-        // Remove o listener para não acumular
-        modalElement.removeEventListener('shown.bs.modal', onShown);
-        });
-        // Exibe o modal
-        confirmationModal.show();
 
-        // Listener para o botão 'Sim'
-        confirmYesButton.onclick = () => {
-            confirmationModal.hide(); // Esconde o modal
-            resolve(true); // Resolve a Promise com TRUE (Confirmado)
-        };
+    const onYes = () => {
+      cleanup();
+      resolve(true);
+    };
 
-        // Listener para o botão 'Não' e clique fora do modal
-        const handleCancel = () => {
-            confirmationModal.hide(); // Esconde o modal
-            resolve(false); // Resolve a Promise com FALSE (Cancelado)
-        };
+    const onNo = () => {
+      cleanup();
+      resolve(false);
+    };
 
-        confirmNoButton.onclick = handleCancel;
-        // Garante que o clique fora do modal também conte como Cancelar
-        modalElement.addEventListener('hidden.bs.modal', function onHidden() {
-            // Só resolve se o modal foi fechado e a Promise ainda não foi resolvida (pelo 'Sim')
-            if (resolve) {
-                resolve(false); 
-            }
-            // Remove o listener para evitar múltiplas chamadas
-            modalElement.removeEventListener('hidden.bs.modal', onHidden);
-        });
-    });
+    function cleanup() {
+      confirmYesButton.removeEventListener('click', onYes);
+      confirmNoButton.removeEventListener('click', onNo);
+    }
+
+    confirmYesButton.addEventListener('click', onYes);
+    confirmNoButton.addEventListener('click', onNo);
+
+    validationModal.show();
+  });
 }
