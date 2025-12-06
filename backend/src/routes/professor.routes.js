@@ -8,7 +8,7 @@ router.get('/', async (req, res) => {
   console.log('Consulta professores recebida'); // Log no backend
   try {
     // Captura os filtros opcionais
-    const { cpf, nome, ufId, cidadeId, nomeCurso } = req.query;
+    const { id, cpf, nome, ufId, cidadeId, nomeCurso } = req.query;
 
     // Array que acumula as condições do WHERE
     const where = [];
@@ -19,6 +19,10 @@ router.get('/', async (req, res) => {
     // -----------------------------
     // Filtros opcionais
     // -----------------------------
+    if (id) {
+      params.push(id);
+      where.push(`p.id = $${params.length}`);
+    }
 
     if (cpf) {
       params.push(cpf);
@@ -48,12 +52,13 @@ router.get('/', async (req, res) => {
      let sql = `
       SELECT DISTINCT
         p.id,
+        p.cpf,
         p.nome,
         p.telefone,
         p.valor_hora_aula,
         p.status,
+        p.data_nascimento,
 
-        -- Cidade e UF
         cid.id AS cidade_id,
         cid.nome AS cidade_nome,
         uf.sigla AS uf_sigla
