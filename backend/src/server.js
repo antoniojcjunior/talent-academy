@@ -1,467 +1,195 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import pkg from 'pg';
-const { Pool } = pkg;
-
-import { normalizarDataNascimento } from './utils/ajusteDatas.js';
-import { comparaRegistros } from './utils/comparaRegistros.js';
-
-process.env.PGCLIENTENCODING = 'UTF8';
+import turmasRoutes from './routes/turma.routes.js';
+import locaisRoutes from './routes/local.routes.js';
+import professorRoutes from './routes/professor.routes.js';
+import { pool } from './db.js';
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const isLocal = process.env.DATABASE_URL?.includes('localhost') || process.env.NODE_ENV === 'development';
+process.env.PGCLIENTENCODING = 'UTF8';
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: isLocal ? false : { rejectUnauthorized: false },
-});
+app.use('/api/turmas', turmasRoutes);
+app.use('/api/locais', locaisRoutes);
+app.use('/api/professores', professorRoutes);
 
-// POST /api/usuarios
-app.post('/api/usuarios', async (req, res) => {
+// rota para listar UF
+app.get('/api/ufs', async (_req, res) => {
+  //console.log('Consulta UFs recebida'); // Log no backend
   try {
-    const { nome, cpf, setor_id, regiao_id, turno_id, data_nascimento, remuneracao } = req.body;
-    const cpfLimpo = String(cpf || '').replace(/\D/g, ''); // limpa o CPF, só digitos
-    const dataNormalizada = normalizarDataNascimento(data_nascimento);
-    const setorIdNum  = Number(setor_id);
-    const regiaoIdNum = Number(regiao_id);
-    const turnoIdNum = Number(turno_id);
-
-    //console.log("Dados do front para o back:", req.body); //mostra quais campos estão chegando do front para o back
-
-    /*if (!nome || nome.trim() === '') { nome vazio OU nome em branco entra no IF e retorna erro
-    return res.status(400).json({ error: 'Nome é obrigatório.' });
-    } Mesma coisa do abaixo, abaixo com escrita + moderna */
-    if (!nome?.trim()) {
-      return res.status(400).json({ error: 'Nome é obrigatório.' });
-    }
-
-    if (cpfLimpo.length !== 11) { /*qtde de caracteres diferente de 11*/
-      return res.status(400).json({ error: 'CPF inválido: informe 11 dígitos.' });
-    }
-
-    /*se não for um número inteiro válido ou se vier em branco e virar zero entre no if.*/
-    if (!Number.isInteger(Number(setorIdNum)) || Number(setorIdNum) <= 0) {
-      return res.status(400).json({ error: 'setor_id inválido.' });
-    };
-
-    if (!Number.isInteger(Number(regiaoIdNum)) || Number(regiaoIdNum) <= 0) {
-      return res.status(400).json({ error: 'regiao_id inválido.' });
-    };
-
-    if (!Number.isInteger(Number(turnoIdNum)) || Number(turnoIdNum) <= 0) {
-      return res.status(400).json({ error: 'turno_id inválido.' });
-    };
-
-    // converte "R$ 5.145,88" → 5145.88
-    const remunNumerica = Number(String(remuneracao).replace(/[R$\s.]/g, '').replace(',', '.'));
-    if (isNaN(remunNumerica)) {
-      return res.status(400).json({ error: 'Remuneração inválida.' });
-    }
-
     const { rows } = await pool.query(
-      'INSERT INTO usuarios (nome, cpf, setor_id, regiao_id, turno_id, data_nascimento, remuneracao) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, nome, cpf, setor_id, regiao_id, turno_id, data_nascimento, remuneracao',
-      [nome.trim(), cpfLimpo, setorIdNum, regiaoIdNum, turnoIdNum, dataNormalizada, remunNumerica]
+      'SELECT id, sigla FROM estados ORDER BY id'
     );
-    //console.log('Usuário incluído com sucesso:', rows[0]);
-    return res.status(201).json(rows[0]); // { id, cpf }
+    res.json(rows);
   } catch (err) {
-    // 23505 = unique_violation no Postgres
-    if (err.code === '23505') {
-      return res.status(409).json({ error: 'CPF já cadastrado.' });
-    }
-    
-    if (err.code === '23503') return res.status(400).json({ error: 'Setor inválido (FK).' });   // foreign_key_violation
-    
     console.error(err);
-    return res.status(500).json({ error: 'Erro ao inserir usuário.' });
+    res.status(500).json({ error: 'Erro ao consultar UFs' });
   }
 });
 
-// DELETE /api/usuarios/:id
-app.delete('/api/usuarios/:id', async (req, res) => {
-    // 1. Captura o ID do parâmetro da URL
-    const { id } = req.params;
-
-    // 2. Validação básica do ID (garante que é um número e não está vazio)
-    // Opcional: Se a rota DELETE é muito usada, mover esta validação para um middleware pode ser mais limpo.
-    if (!id || isNaN(parseInt(id))) {
-        return res.status(400).json({ error: 'ID de usuário inválido.' });
-    }
-
-    try {
-        // 3. Execução da query SQL DELETE
-        const queryText = 'DELETE FROM usuarios WHERE id = $1';
-        
-        // pool.query é a sua função de conexão com o PostgreSQL
-        const result = await pool.query(queryText, [id]);
-
-        // 4. Verifica se alguma linha foi realmente deletada (rowCount)
-        if (result.rowCount === 0) {
-            // Se rowCount for 0, o usuário com o ID fornecido não existe
-            return res.status(404).json({ error: `Usuário ID ${id} não encontrado.` });
-        }
-
-        // 5. Retorna status 204 (No Content) para sucesso em deleções, pois não há conteúdo para retornar.
-        res.status(204).send(); 
-
-    } catch (err) {
-        console.error('Erro ao deletar usuário:', err);
-        // Retorna status 500 para erro interno do servidor
-        res.status(500).json({ error: 'Erro interno do servidor ao deletar o usuário.' });
-    }
+// rota para listar UF por id
+app.get('/api/uf/:ufId', async (req, res) => {
+  const { ufId } = req.params;
+  console.log('Consulta UF recebida'); // Log no backend
+  try {
+    const { rows } = await pool.query(
+      'SELECT id, sigla FROM estados WHERE id = $1 ORDER BY sigla',
+      [ufId]
+    );
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao consultar UF' });
+  }
 });
 
-// pesquisar usuário por ID
-app.get('/api/usuarios/:id', async (req, res) => {
+// rota para listar cidades de uma UF
+app.get('/api/cidades/:ufId', async (req, res) => {
+  const { ufId } = req.params;
+  console.log('Consulta cidades recebida para UF:', ufId);
   try {
-    // 1. Extrai o "id" da URL
-    const { id } = req.params;
+    const { rows } = await pool.query(
+      'SELECT id, nome FROM cidades WHERE uf_id = $1 ORDER BY nome',
+      [ufId]
+    );
+    res.json(rows);
+  } catch (err) {
+    console.error('Erro ao consultar cidades:', err);
+    res.status(500).json({ error: 'Erro ao consultar cidades' });
+  }
+});
 
-    // 2. Validação rápida
-    if (!id || isNaN(Number(id))) {
-      return res.status(400).json({ error: 'ID inválido.' });
+// rota para listar cidades por id
+app.get('/api/cidade/:cidade_id', async (req, res) => {
+  const { cidade_id } = req.params;
+  console.log('Consulta cidades por id:', cidade_id);
+  try {
+    const { rows } = await pool.query(
+      'SELECT id, nome, uf_id FROM cidades WHERE id = $1 ORDER BY nome',
+      [cidade_id]
+    );
+    res.json(rows);
+  } catch (err) {
+    console.error('Erro ao consultar cidades:', err);
+    res.status(500).json({ error: 'Erro ao consultar cidades' });
+  }
+});
+
+// rota para status da turma
+app.get('/api/status_turma', async (_req, res) => {
+  console.log('Consulta status_turma recebida'); // Log no backend
+  try {
+    const { rows } = await pool.query(
+      'SELECT id, descricao FROM status_turma ORDER BY id'
+    );
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao consultar status_turma' });
+  }
+});
+
+// rota para modalidades
+app.get('/api/modalidades', async (_req, res) => {
+  console.log('Consulta modalidades recebida'); // Log no backend
+  try {
+    const { rows } = await pool.query(
+      'SELECT id, nome FROM modalidades ORDER BY id'
+    );
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao consultar modalidades' });
+  }
+});
+
+// rota para listar modalidade por id
+app.get('/api/modalidade/:modalidade_id', async (req, res) => {
+  const { modalidade_id } = req.params;
+  console.log('Consulta modalidades por id:', modalidade_id);
+  try {
+    const { rows } = await pool.query(
+      'SELECT id, nome FROM modalidades WHERE id = $1 ORDER BY nome',
+      [modalidade_id]
+    );
+    res.json(rows);
+  } catch (err) {
+    console.error('Erro ao consultar modalidades:', err);
+    res.status(500).json({ error: 'Erro ao consultar modalidades' });
+  }
+});
+
+// rota para cursos com filtros
+app.get('/api/cursos', async (req, res) => {
+  console.log('Consulta cursos recebida');
+
+  try {
+    // Captura os filtros opcionais
+    const { nomeCurso, modalidadeId, professorId } = req.query;
+
+    // Array que acumula as condições do WHERE
+    const where = [];
+    // Array que acumula os valores para o prepared statement
+    const params = [];
+
+    // -----------------------------
+    // Filtros opcionais
+    // -----------------------------
+
+    if (nomeCurso) {
+      params.push(`%${nomeCurso}%`);
+      where.push(`c.nome ILIKE $${params.length}`);
     }
 
-    // 3. Consulta SQL
-    const queryText = `
-      SELECT id, nome, cpf, setor_id, regiao_id, turno_id, data_nascimento, remuneracao
-      FROM usuarios
-      WHERE id = $1
+    if (modalidadeId) {
+      params.push(modalidadeId);
+      where.push(`c.modalidade_id = $${params.length}`);
+    }
+
+    if (professorId) {
+      params.push(professorId);
+      where.push(`pc.professor_id = $${params.length}`);
+    }
+
+    // Monta a query base
+    let sql = `
+      SELECT DISTINCT
+        c.id,
+        c.nome,
+        c.carga_horaria_horas,
+        c.valor_padrao_inscricao,
+
+        -- Modalidade
+        c.modalidade_id,
+        m.nome AS modalidade_nome
+
+      FROM cursos c
+      LEFT JOIN professores_cursos pc
+        ON pc.curso_id = c.id
+      LEFT JOIN modalidades m
+        ON m.id = c.modalidade_id
     `;
 
-    const { rows } = await pool.query(queryText, [id]);
-
-    // 4. Tratamento se não encontrar
-    if (rows.length === 0) {
-      return res.status(404).json({ error: 'Usuário não encontrado.' });
+    // Se existirem filtros, adiciona WHERE
+    if (where.length > 0) {
+      sql += ' WHERE ' + where.join(' AND ');
     }
 
-    // 5. Retorno do registro
-    return res.status(200).json(rows[0]);
+    // Ordenação
+    sql += ' ORDER BY c.nome';
 
-  } catch (err) {
-    console.error('Erro ao buscar usuário por ID:', err);
-    return res.status(500).json({ error: 'Erro interno ao buscar usuário.' });
-  }
-});
-
-// listar usuários
-app.get('/api/usuarios', async (req, res) => {
-  console.log('Consulta servidor realizada'); // Log no backend
-  // 1. Obtém o CPF da query string (ex: /api/usuarios?cpf=12345678900)
-    const cpfFiltro = req.query.cpf;
-    const regiaoFiltro = req.query.regiao;
-    const turnosFiltro = req.query.turnos;
-    const setorFiltro = req.query.setor;
-    let nomeFiltro = req.query.nome;
-    // Se vier "%%" ou "%" apenas, considerar como filtro vazio
-    if (nomeFiltro === '%%' || nomeFiltro === '%' || nomeFiltro.trim() === '') {
-      nomeFiltro = null;
-    }    
-    //console.log(nomeFiltro);
-    const { dataNascInicio, dataNascFim } = req.query;
-    //console.log(dataNascInicio);
-    //console.log(dataNascFim);
-      // 1. Definição do SQL com JOIN
-    let sql = `
-      SELECT 
-        usr.id, 
-        usr.nome, 
-        usr.cpf, 
-        usr.setor_id, 
-        usr.regiao_id, 
-        usr.turno_id, 
-        trn.turno,
-        reg.nome as nome_regiao,
-        setor.nome as nome_setor,
-        setor.sigla as sigla_setor,
-        usr.data_nascimento, 
-        usr.remuneracao
-      FROM 
-          usuarios usr
-      INNER JOIN 
-          turnos trn ON usr.turno_id = trn.id
-      INNER JOIN 
-          regioes reg ON usr.regiao_id = reg.id
-      INNER JOIN 
-          setores setor ON usr.setor_id = setor.id`;
-
-    const params = []; //array de parametros passados na pesquisa, ex: o nº do CPF e o ID do setor
-    let conditions = [];// Array para armazenar as cláusulas WHERE
-
-// 1. Filtro por CPF
-if (cpfFiltro && cpfFiltro.length > 0) {
-    // Adiciona a condição ao array e o valor ao array de parâmetros
-    conditions.push(`usr.cpf = $${params.length + 1}`); //inclui condições que serão utilizadas no where
-    params.push(cpfFiltro); //inclui o nº do CPF no array params
-}
-
-// 2. Filtro por Região
-if (regiaoFiltro && regiaoFiltro.length > 0) {
-    // Adiciona a condição ao array e o valor ao array de parâmetros
-    // NOTA: Assumimos que o input do frontend envia o ID da região.
-    conditions.push(`usr.regiao_id = $${params.length + 1}`);
-    params.push(regiaoFiltro);
-}
-
-// 3. <<-- NOVO FILTRO: Por Múltiplos Turnos (usando IN)
-if (turnosFiltro && turnosFiltro.length > 0) {
-    // A string de turnosFiltro é "1,3,5". 
-    // O operador IN do SQL aceita esta lista de valores.
-    // Usamos 'turnosFiltro' diretamente aqui, pois ele é a lista de valores.
-    conditions.push(`usr.turno_id IN (${turnosFiltro})`);
-    // NOTA IMPORTANTE: Por estarmos injetando a lista de IDs de um SELECT 
-    // (que assumimos ser sanitizados por serem numéricos), podemos usar IN.
-    // No entanto, para segurança máxima, seria ideal mapear os valores e usar placeholders ($1, $2, etc.)
-    // Vamos usar a injeção simples com IN(1,3,5) por enquanto, focando na funcionalidade.
-}
-
-// 4. Filtro por setor
-if (setorFiltro && setorFiltro.length > 0) {
-    // Adiciona a condição ao array e o valor ao array de parâmetros
-    // NOTA: Assumimos que o input do frontend envia o ID do filtro.
-    conditions.push(`usr.setor_id = $${params.length + 1}`);
-    params.push(setorFiltro);
-}
-
-// 5. Filtro por nome
- if (nomeFiltro && nomeFiltro.length > 0) {
-//     // Adiciona a condição ao array e o valor ao array de parâmetros
-//     // NOTA: Assumimos que o input do frontend envia o ID do filtro.
-     conditions.push(`unaccent(usr.nome) ILIKE unaccent($${params.length + 1})`);
-     params.push(nomeFiltro);
- }
-
-// 6. Filtro por data de nascimento
-if (dataNascInicio && dataNascFim) { //quando ambas são preenchidas
-    conditions.push(`usr.data_nascimento BETWEEN $${params.length + 1} AND $${params.length + 2}`);
-    params.push(dataNascInicio, dataNascFim);
-
-} else if (dataNascInicio) { //somente data inicio preenchida
-    conditions.push(`usr.data_nascimento >= $${params.length + 1}`);
-    params.push(dataNascInicio);
-
-} else if (dataNascFim) {
-    conditions.push(`usr.data_nascimento <= $${params.length + 1}`);
-    params.push(dataNascFim);
-}
-
-
-//console.log('CONDIÇÕES:', conditions);
-// 3. Constrói a cláusula WHERE final
-if (conditions.length > 0) {
-    // Se houver condições, adiciona ' WHERE ' e junta as condições com ' AND '
-    sql += ` WHERE ` + conditions.join(' AND ');
-}
-
-// 4. Adiciona a ordenação
-sql += ` ORDER BY usr.nome ASC`;
-//console.log(sql);
-//console.log('PARAMS:', params);
-  try {
+    // Executa
+    console.log('SQL cursos:', sql);
+    console.log('Parâmetros cursos:', params);
     const { rows } = await pool.query(sql, params);
+
     res.json(rows);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Erro ao consultar usuários' });
-  }
-});
-
-// atualizar usuários
-app.put('/api/usuarios/:id', async (req, res) => {
-  // deixar visíveis no catch
-  let usuarioId;
-  let cpfLimpo;  
-  try {
-      const { id } = req.params; // Captura o ID da URL
-      usuarioId = Number(id);
-
-      if (isNaN(usuarioId) || usuarioId <= 0) {
-          return res.status(400).json({ error: 'ID de usuário inválido para atualização.' });
-      }
-
-      const { nome, cpf, setor_id, regiao_id, turno_id, data_nascimento, remuneracao } = req.body;
-      //const cpfLimpo = String(cpf || '').replace(/\D/g, '');
-      cpfLimpo = String(cpf || '').replace(/\D/g, ''); //usa variável externa
-      //const dataNormalizada = normalizarDataNascimento(data_nascimento); já está sendo normalizada antes de ir pro banco (via comparaRegistros).
-      const setorIdNum = Number(setor_id);
-      const regiaoIdNum = Number(regiao_id);
-      const turnoIdNum = Number(turno_id);
-
-      //console.log(`Dados do front para o back (PUT ID: ${usuarioId}):`, req.body);
-
-      // --- VALIDAÇÕES (Reutilizadas do POST) ---
-      if (!nome?.trim()) {
-          return res.status(400).json({ error: 'Nome é obrigatório.' });
-      }
-
-      if (cpfLimpo.length !== 11) {
-          return res.status(400).json({ error: 'CPF inválido: informe 11 dígitos.' });
-      }
-
-      if (!Number.isInteger(setorIdNum) || setorIdNum <= 0) {
-          return res.status(400).json({ error: 'setor_id inválido.' });
-      }
-
-      if (!Number.isInteger(regiaoIdNum) || regiaoIdNum <= 0) {
-          return res.status(400).json({ error: 'regiao_id inválido.' });
-      }
-
-      if (!Number.isInteger(turnoIdNum) || turnoIdNum <= 0) {
-          return res.status(400).json({ error: 'turno_id inválido.' });
-      }
-
-      // Converte remuneração
-      const remunNumerica = Number(String(remuneracao).replace(/[R$\s.]/g, '').replace(',', '.'));
-      
-      if (isNaN(remunNumerica)) {
-          return res.status(400).json({ error: 'Remuneração inválida.' });
-      }
-      // --- Fim das Validações ---
-      
-      //buscar dados completos do usuário para comparação
-      const { rows: rowsUsuario } = await pool.query(
-          `
-          SELECT nome, cpf, setor_id, regiao_id, turno_id, data_nascimento, remuneracao
-            FROM usuarios
-            WHERE id = $1
-          `,
-          [usuarioId]
-      );
-
-      if (rowsUsuario.length === 0) {
-          return res.status(404).json({ error: 'Usuário não encontrado.' });
-      }
-
-      const usuarioAtual = rowsUsuario[0];
-      //console.log('usuario atual: ', usuarioAtual);
-      // console.log('parametros: ', nome,
-      //          cpf,
-      //          setor_id,
-      //          regiao_id,
-      //          turno_id,
-      //          data_nascimento,
-      //          remunNumerica,);
-      //comparação entre o registro atual e o que veio do front
-      const { mesmosDados, camposAlterados, novo } = comparaRegistros(
-          usuarioAtual,
-          {
-              nome,
-              cpf,
-              setor_id,
-              regiao_id,
-              turno_id,
-              data_nascimento,
-              remuneracao: remunNumerica,
-          }
-      );
-
-      //console.log('mesmos dados: ', mesmosDados);
-      if (mesmosDados) {
-          // nada mudou → não faz UPDATE
-          //console.log('mesmos dados: ', mesmosDados);
-          return res.status(200).json({
-              mensagem: 'Nenhuma alteração encontrada.',
-              camposAlterados // aqui virá [] só para manter o padrão
-          });
-      }
-
-      // 🔹 NOVO: usar os dados normalizados pela comparaRegistros no UPDATE
-      const usuarioNovo = novo;
-
-      // Comando SQL para UPDATE
-      const { rows } = await pool.query(
-          `
-          UPDATE usuarios 
-          SET nome = $1, cpf = $2, setor_id = $3, regiao_id = $4, turno_id = $5, data_nascimento = $6, remuneracao = $7
-          WHERE id = $8
-          RETURNING id, nome, cpf, setor_id, regiao_id, turno_id, data_nascimento, remuneracao
-          `,
-          [
-                usuarioNovo.nome,           
-                usuarioNovo.cpf,            
-                usuarioNovo.setor_id,       
-                usuarioNovo.regiao_id,      
-                usuarioNovo.turno_id,       
-                usuarioNovo.data_nascimento,
-                usuarioNovo.remuneracao,    
-                usuarioId
-            ]
-          //[nome.trim(), cpfLimpo, setorIdNum, regiaoIdNum, turnoIdNum, dataNormalizada, remunNumerica, usuarioId]
-      );
-      // Se a atualização foi bem-sucedida, retorna o registro atualizado.
-      return res.status(200).json(rows[0]); 
-
-  } catch (err) {
-      // --- TRATAMENTO DE ERROS ---
-      
-      // 23505 = unique_violation no Postgres (CPF duplicado)
-      if (err.code === '23505') {
-          // Verifica se o CPF está em uso por OUTRO usuário (excluindo o ID atual da busca)
-          const exists = await pool.query(
-              'SELECT id FROM usuarios WHERE cpf = $1 AND id <> $2', 
-              [cpfLimpo, usuarioId]
-          );
-
-          if (exists.rows.length > 0) {
-              // O CPF está em uso por outro usuário, retorna o erro 409
-              return res.status(409).json({ error: 'CPF já cadastrado para outro usuário.' });
-          }
-          // Se o CPF pertence ao PRÓPRIO usuário (o que está sendo editado),
-          // isso é permitido. O erro 23505 nesse caso não deveria ocorrer se o update
-      }
-
-      // 23503 = foreign_key_violation
-      if (err.code === '23503') return res.status(400).json({ error: 'Chave estrangeira inválida (Setor, Região ou Turno).' });   
-      
-      console.error(err);
-      return res.status(500).json({ error: 'Erro ao atualizar usuário.' });
-  }
-});
-
-// rota para listar setores
-app.get('/api/setores', async (_req, res) => {
-  console.log('Requisição recebida em /api/setores'); // Log no backend
-  try {
-    const { rows } = await pool.query(
-      'SELECT id, nome, sigla FROM setores ORDER BY nome'
-    );
-    res.json(rows);
-  } catch (erroSetores) {
-    console.error(erroSetores);
-    res.status(500).json({ error: 'Erro ao consultar setores' });
-  }
-});
-
-// rota para listar regioes
-app.get('/api/regioes', async (_req, res) => {
-  console.log('Consulta a regiões recebida'); // Log no backend
-  try {
-    const { rows } = await pool.query(
-      'SELECT id, nome FROM regioes ORDER BY nome'
-    );
-    res.json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Erro ao consultar regioes' });
-  }
-});
-
-// rota para listar turnos
-app.get('/api/turnos', async (_req, res) => {
-  console.log('Consulta aos turnos recebida'); // Log no backend
-  try {
-    const { rows } = await pool.query(
-      'SELECT id, turno FROM turnos ORDER BY id'
-    );
-    res.json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Erro ao consultar turnos' });
+    res.status(500).json({ error: 'Erro ao consultar cursos' });
   }
 });
 
