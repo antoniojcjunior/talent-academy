@@ -8,11 +8,11 @@ router.get('/', async (req, res) => {
   console.log('Consulta professores recebida'); // Log no backend
   try {
     // Captura os filtros opcionais
-    const { id, cpf, nome, ufId, cidadeId, nomeCurso } = req.query;
+    const { id, cpf, nome, ufId, cidadeId, nomeCurso, status } = req.query;
 
     // Array que acumula as condições do WHERE
     const where = [];
-    where.push("p.status = 'ATIVO'"); // Filtra apenas professores ativos
+    //where.push("p.status = 'ATIVO'"); // Filtra apenas professores ativos
     // Array que acumula os valores para o prepared statement
     const params = [];
 
@@ -47,6 +47,11 @@ router.get('/', async (req, res) => {
     if (nomeCurso) {
       params.push(`%${nomeCurso}%`);
       where.push(`c.nome ILIKE $${params.length}`);
+    }
+
+    // Se o frontend NÃO pedir status, traz só os ativos
+    if (!status || status === 'ATIVO') {
+      where.push("p.status = 'ATIVO'");
     }
     // Monta a query base
      let sql = `
