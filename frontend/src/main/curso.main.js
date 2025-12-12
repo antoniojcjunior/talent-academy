@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 //   ajustarCampoDataParaMobile(dataNascFimEl);
   
   //carregar os selects específicos desta página
-  carregarSelect({ url: `${API_BASE}/api/cursos`, selectId: 'curso', labelCampo: 'nome' });
   carregarSelect({ url: `${API_BASE}/api/professores`, selectId: 'professor', labelCampo: 'nome' });
   carregarSelect({ url: `${API_BASE}/api/modalidades`, selectId: 'modalidade', labelCampo: 'nome' });
 

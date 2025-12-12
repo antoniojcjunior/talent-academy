@@ -3,7 +3,7 @@
 Sistema para gestão de cursos, treinamentos e capacitações.  
 Projeto desenvolvido para estudos de arquitetura front-end, back-end e integração com banco de dados.
 
-## 🚀 Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 ### **Backend**
 - Node.js
@@ -22,15 +22,14 @@ Projeto desenvolvido para estudos de arquitetura front-end, back-end e integraç
 
 ---
 
-## 📁 Estrutura do Projeto
+##  Estrutura do Projeto
 
 ```bash
 talent-academy/
 ├── backend/
-│   ├── routes/
-│   ├── controllers/ (se aplicar)
-│   ├── services/ (se aplicar)
-│   └── server.js
+│   ├── src/
+│       ├── routes/
+│       ├── utils
 │
 └── frontend/
     ├── src/

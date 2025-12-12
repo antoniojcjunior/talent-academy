@@ -36,3 +36,8 @@ export async function executarPesquisaProfessores() {
     return [];
   }
 }
+
+export async function getProfessorPorId(id) {
+  const lista = await getProfessores({ id });
+  return lista[0] || null;
+}

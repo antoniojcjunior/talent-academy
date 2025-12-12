@@ -21,7 +21,7 @@
   <link rel="stylesheet" href="../../../assets/css/main.css">
   <link rel="stylesheet" href="../../../assets/css/sections/sidebar.css">
 </head>
-<body class="bg-body-tertiary">
+<body data-page="professores-pesquisa" class="bg-body-tertiary">
   <!-- Barra superior -->
   <nav class="navbar navbar-dark bg-dark shadow-sm">
     <div class="container-fluid d-flex align-items-center justify-content-between">
@@ -45,6 +45,11 @@
       <!-- Sidebar -->
       <aside id="sidebar" class="sidebar-dark min-vh-100 py-3">
         <nav class="nav flex-column small sidebar-menu">
+          <a class="nav-link d-flex align-items-center gap-2" href="../index.html">
+            <i class="bi bi-house-door"></i>
+            <span class="sidebar-text">Início</span>
+            </a>
+          <hr class="my-3">
           <span class="text-uppercase sidebar-title fw-semibold mb-2 px-3">
             Cadastros
           </span>
@@ -117,7 +122,18 @@
               </div>
             </div>
             <!-- Linha 3: Botão Filtrar alinhado à direita -->
-            <div class="row g-2 align-items-end justify-content-end">
+            <div class="row g-2 justify-content-between align-items-center d-flex">
+              <div class="col-auto">
+              <div class="form-check form-switch form-check-sm">
+                <input 
+                  class="form-check-input professor-status-check" 
+                  type="checkbox" 
+                  id="chkProfessoresAtivos">
+                <label class="form-check-label small" for="chkProfessoresAtivos">
+                  Incluir professores inativos
+                </label>
+              </div>
+              </div>
               <div class="col-auto">
                 <button type="submit" class="btn btn-outline-secondary btn-sm">Pesquisar</button>
                 <button id="Limpar" type="button" class="btn btn-outline-secondary btn-sm bg-light">Limpar</button>

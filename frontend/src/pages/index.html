@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Talent Academy - Página Inicial</title>
+  <link rel="icon" type="image/png" href="../../favicon-ta.png">
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+    crossorigin="anonymous"
+    onerror="this.removeAttribute('integrity'); this.href='../../assets/lib/bootstrap/bootstrap.min.5.3.3.css';"/>
+
+  <link 
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.bootstrap5.css"
+    integrity="sha384-0BhIWKcZqG5KR1KTIeRg9FC62RTDWuUeyR1dsP2sv0fHx9X4+wOhEyRj4QN+7GAq"
+    crossorigin="anonymous"
+    onerror="this.removeAttribute('integrity'); this.href='../../assets/lib/tom-select/tom-select.2.3.1.css';"/>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/sections/sidebar.css">
+</head>
+<body class="bg-body-tertiary">
+  <!-- Barra superior -->
+  <nav class="navbar navbar-dark bg-dark shadow-sm">
+    <div class="container-fluid d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-0">
+        <button id="toggleSidebar" class="btn btn-link btn-lg text-light me-3">
+          <i class="bi bi-list"></i>
+        </button>
+        <span class="navbar-brand d-flex align-items-center gap-2">
+          <span class="fw-bold">Gestão Acadêmica</span>
+          <span class="badge bg-primary px-2 py-1 rounded">Talent Academy</span>
+        </span>
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        <span class="text-light small">Antonio Jr</span>
+        <button class="btn btn-outline-light btn-sm">Sair</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid p-0">
+    <div class="d-flex">
+      <!-- Sidebar -->
+      <aside id="sidebar" class="flex-shrink-0 sidebar-dark min-vh-100 py-3">
+        <nav class="nav flex-column small sidebar-menu">
+          <a class="nav-link d-flex align-items-center gap-2" href="./index.html">
+            <i class="bi bi-house-door"></i>
+            <span class="sidebar-text">Início</span>
+            </a>
+          <hr class="my-3">
+          <span class="text-uppercase sidebar-title fw-semibold mb-2 px-3">
+            Cadastros
+          </span>
+          <a class="nav-link d-flex align-items-center gap-2" href="./cursos/cursos.html">
+            <i class="bi bi-journal-bookmark"></i>
+            <span class="sidebar-text">Cursos</span>
+          </a>
+          <a class="nav-link d-flex align-items-center gap-2" href="./professores/professores.html">
+            <i class="bi bi-person-badge"></i>
+            <span class="sidebar-text">Professores</span>
+          </a>
+          <a class="nav-link d-flex align-items-center gap-2" href="./locais/locais.html">
+            <i class="bi bi-geo-alt"></i>
+            <span class="sidebar-text">Locais</span>
+          </a>
+          <hr class="my-3">
+          <span class="text-uppercase sidebar-title fw-semibold mb-2 px-3">
+            Turmas
+          </span>
+          <a class="nav-link d-flex align-items-center gap-2" href="./turmas/turmas.html">
+            <i class="bi bi-people"></i>
+            <span class="sidebar-text">Turmas</span>
+          </a>
+        </nav>
+      </aside>
+
+      <!-- Conteúdo principal -->
+      <main class="flex-grow-1 p-4">
+        <!-- Cabeçalho -->
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-4">
+          <div>
+            <h1 class="h4 mb-0">Talent Academy — Página inicial</h1>
+            <small class="text-muted">Bem-vindo! Acesse rapidamente ações e relatórios.</small>
+          </div>
+        </div>
+
+        <!-- Dashboard cards -->
+        <section>
+          <div class="row g-3">
+            <!-- Card: Consultar Turmas -->
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card shadow-sm h-100">
+                <div class="card-body d-flex flex-column">
+                  <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="card-title mb-0">Consultar turmas</h5>
+                    <i class="bi bi-people fs-3 text-primary"></i>
+                  </div>
+                  <p class="card-text text-muted small flex-grow-1">Veja a lista de turmas, horários e participantes.</p>
+                  <div class="mt-3 d-flex justify-content-end">
+                    <a href="../turmas/turmas.html" class="btn btn-primary btn-sm">Abrir</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card: Incluir Professor -->
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card shadow-sm h-100">
+                <div class="card-body d-flex flex-column">
+                  <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="card-title mb-0">Incluir professor</h5>
+                    <i class="bi bi-person-plus fs-3 text-success"></i>
+                  </div>
+                  <p class="card-text text-muted small flex-grow-1">Adicionar um novo professor ao sistema.</p>
+                  <div class="mt-3 d-flex justify-content-end">
+                    <a href="../professores/professores.html" class="btn btn-outline-secondary btn-sm">Novo</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card: Consultar Professores -->
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card shadow-sm h-100">
+                <div class="card-body d-flex flex-column">
+                  <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="card-title mb-0">Consultar professores</h5>
+                    <i class="bi bi-person-badge fs-3 text-info"></i>
+                  </div>
+                  <p class="card-text text-muted small flex-grow-1">Pesquisar, filtrar e visualizar professores cadastrados.</p>
+                  <div class="mt-3 d-flex justify-content-end">
+                    <a href="../professores/professores.html" class="btn btn-primary btn-sm">Pesquisar</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card: Consultar Cursos -->
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card shadow-sm h-100">
+                <div class="card-body d-flex flex-column">
+                  <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="card-title mb-0">Consultar cursos</h5>
+                    <i class="bi bi-journal-bookmark fs-3 text-warning"></i>
+                  </div>
+                  <p class="card-text text-muted small flex-grow-1">Gerencie o catálogo de cursos e seus detalhes.</p>
+                  <div class="mt-3 d-flex justify-content-end">
+                    <a href="../cursos/cursos.html" class="btn btn-outline-secondary btn-sm">Abrir</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card: Consultar Locais -->
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card shadow-sm h-100">
+                <div class="card-body d-flex flex-column">
+                  <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="card-title mb-0">Consultar locais</h5>
+                    <i class="bi bi-geo-alt fs-3 text-secondary"></i>
+                  </div>
+                  <p class="card-text text-muted small flex-grow-1">Ver locais disponíveis e informações de contato.</p>
+                  <div class="mt-3 d-flex justify-content-end">
+                    <a href="../locais/locais.html" class="btn btn-primary btn-sm">Abrir</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card: Relatórios (placeholder) -->
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card shadow-sm h-100">
+                <div class="card-body d-flex flex-column">
+                  <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="card-title mb-0">Relatórios</h5>
+                    <i class="bi bi-bar-chart-line fs-3 text-muted"></i>
+                  </div>
+                  <p class="card-text text-muted small flex-grow-1">Acessar relatórios e exportações (em breve).</p>
+                  <div class="mt-3 d-flex justify-content-end">
+                    <a href="#" class="btn btn-outline-secondary btn-sm">Abrir</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card: Configurações (placeholder) -->
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card shadow-sm h-100">
+                <div class="card-body d-flex flex-column">
+                  <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="card-title mb-0">Configurações</h5>
+                    <i class="bi bi-gear fs-3 text-muted"></i>
+                  </div>
+                  <p class="card-text text-muted small flex-grow-1">Preferências e ajustes do sistema.</p>
+                  <div class="mt-3 d-flex justify-content-end">
+                    <a href="#" class="btn btn-outline-secondary btn-sm">Abrir</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script
+    src="https://unpkg.com/vanilla-masker@1.1.1/build/vanilla-masker.min.js"
+    integrity="sha384-12XSlvcHmo+GznHloktY+lT6qPgXYbPqMFGiY0JflahmzOxYAkfrK+YzvoBAH+qQ"
+    crossorigin="anonymous">
+  </script>
+
+  <script 
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous">
+  </script>
+
+  <script 
+    src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"
+    integrity="sha384-cnROoUgVILyibe3J0zhzWoJ9p2WmdnK7j/BOTSWqVDbC1pVw2d+i6Q/1ESKJKCYf"
+    crossorigin="anonymous">
+  </script>
+
+  <script>
+    if (!window.bootstrap || !window.bootstrap.Popover) {
+      console.warn('CDN do Bootstrap falhou. Carregando versão local...');
+      const sc = document.createElement('script');
+      sc.src = '../../assets/lib/bootstrap/bootstrap.bundle.min-5.3.3.js';
+      document.head.appendChild(sc);
+    }
+  </script>
+
+  <script>
+    if (!window.TomSelect) {
+      console.warn('CDN do Tom Select falhou. Carregando versão local...');
+      const s = document.createElement('script');
+      s.src = '../../assets/lib/tom-select/tom-select-2.3.1.min.js';
+      document.head.appendChild(s);
+    }
+  </script>
+
+  <script>
+    if (!window.VMasker) {
+      console.warn('CDN do Vanilla Masker falhou. Carregando versão local...');
+      const s = document.createElement('script');
+      s.src = '../../assets/lib/vanilla-masker/vanilla-masker-1.1.1.min.js';
+      document.head.appendChild(s);
+    }
+  </script>
+
+  <script defer type="module" src="../layout/sidebar.js"></script>
+  <script type="module" src="../utils/modal-global.js"></script>
+</body>
+</html>

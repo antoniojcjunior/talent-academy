@@ -1,10 +1,11 @@
 import { API_BASE } from '../config.js';
 
 // Buscar TODOS os professores
-export async function getProfessores({ cpf, nome, ufId, cidadeId, nomeCurso } = {}) {
+export async function getProfessores({ id, cpf, nome, ufId, cidadeId, nomeCurso } = {}) {
   const params = new URLSearchParams();
 
   // Só adiciona parâmetros se estiverem preenchidos
+  if (id) params.append('id', id);
   if (cpf) params.append('cpf', cpf);
   if (nome) params.append('nome', nome);
   if (ufId) params.append('ufId', ufId);

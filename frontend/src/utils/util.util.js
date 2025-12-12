@@ -224,29 +224,29 @@ export function formatarMoedaBR(valor) {
   });
 }
 //Formata uma string de data from BD (ex: YYYY-MM-DD) para o formato brasileiro (DD/MM/YYYY).
-export const formatDateToBR = (dateString) => {
-    // Retorna string vazia se o valor for nulo, indefinido ou vazio
-    if (!dateString) {
-        return '';
-    }
+// export const formatDateToBR = (dateString) => {
+//     // Retorna string vazia se o valor for nulo, indefinido ou vazio
+//     if (!dateString) {
+//         return '';
+//     }
 
-    // 1. Cria um objeto Date. Adicionar 'T00:00:00' ajuda a garantir que a data seja 
-    // interpretada como local para evitar problemas de TimeZone em datas puras (YYYY-MM-DD).
-    const date = new Date(dateString.includes('T') ? dateString : `${dateString}T00:00:00`);
+//     // 1. Cria um objeto Date. Adicionar 'T00:00:00' ajuda a garantir que a data seja 
+//     // interpretada como local para evitar problemas de TimeZone em datas puras (YYYY-MM-DD).
+//     const date = new Date(dateString.includes('T') ? dateString : `${dateString}T00:00:00`);
 
-    // Verifica se a data é válida
-    if (isNaN(date.getTime())) {
-        // Se for uma string inválida, retorna a string original ou vazia, dependendo da necessidade
-        return dateString; 
-    }
+//     // Verifica se a data é válida
+//     if (isNaN(date.getTime())) {
+//         // Se for uma string inválida, retorna a string original ou vazia, dependendo da necessidade
+//         return dateString; 
+//     }
 
-    // 2. Utiliza toLocaleDateString com o locale 'pt-BR' para formatar
-    return date.toLocaleDateString('pt-BR', { 
-        day: '2-digit', 
-        month: '2-digit', 
-        year: 'numeric' 
-    });
-};
+//     // 2. Utiliza toLocaleDateString com o locale 'pt-BR' para formatar
+//     return date.toLocaleDateString('pt-BR', { 
+//         day: '2-digit', 
+//         month: '2-digit', 
+//         year: 'numeric' 
+//     });
+// };
 
 // Formata número de telefone proveniente do BD (varchar)
 export function formatarTelefone(valor) {

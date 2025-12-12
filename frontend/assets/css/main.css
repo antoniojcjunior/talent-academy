@@ -17,9 +17,9 @@ h1,
   color: #2D3748;
 }
 
-.btn-editar,
-.btn-detalhar,
-.btn-deletar {
+.btn-edit,
+.btn-detail,
+.btn-delete {
   border: none;
   /* Se o botão for do tipo 'outline' (ex: .btn-outline-secondary), 
      o Bootstrap pode estar aplicando uma sombra para simular a borda.

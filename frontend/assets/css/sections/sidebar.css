@@ -1,6 +1,6 @@
 /* Estado normal (aberta) */
 #sidebar {
-  width: 220px;            /* largura da sidebar aberta */
+  width: 190px;            /* largura da sidebar aberta */
   transition: width 0.3s ease;
 }
 

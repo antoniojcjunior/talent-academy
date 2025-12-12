@@ -49,12 +49,12 @@ export function renderTabelaLocais(containerEl, locais) {
         <td class="text-end">${formatarMoedaBR(l.valor_aluguel_dia)}</td>
         <td class="text-center acoes">
           <div class="acoes-wrapper">
-            <button class="btn-deletar btn-delete-local" data-id="${l.id}" data-nome="${escapeHtml(l.nome ?? '')}" title="Excluir">
+            <button class="btn-delete" data-id="${l.id}" data-nome="${escapeHtml(l.nome ?? '')}" title="Excluir">
               <div class="acoes-icone">
               <i class="bi bi-trash"></i>
               </div>
             </button>
-            <button class="btn-detalhar btn-detalhar-local" data-id="${l.id}" data-nome="${escapeHtml(l.nome ?? '')}" title="Editar">
+            <button class="btn-detail" data-id="${l.id}" data-nome="${escapeHtml(l.nome ?? '')}" title="Editar">
               <div class="acoes-icone">
               <i class="bi bi-search"></i>
               </div>

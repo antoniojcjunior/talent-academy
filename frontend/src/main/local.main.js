@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Listener do botão Detalhar Local
     tabelaResultados.addEventListener('click', (e) => {
-    const btn = e.target.closest('.btn-detalhar-local');
+    const btn = e.target.closest('.btn-detail');
     if (btn) {
       const id = btn.dataset.id;
       window.location.href = `locais-detalhar.html?id=${id}`;
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Listener do botão Excluir Local (na tabela de resultados)
     if (tabelaResultados) {
       tabelaResultados.addEventListener('click', async (e) => {
-        const botaoDelete = e.target.closest('.btn-delete-local');
+        const botaoDelete = e.target.closest('.btn-delete');
         if (botaoDelete) {
           const id = botaoDelete.dataset.id;
           const nome = botaoDelete.dataset.nome;

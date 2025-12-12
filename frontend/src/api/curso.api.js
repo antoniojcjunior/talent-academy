@@ -1,6 +1,6 @@
 import { API_BASE } from '../config.js';
 
-// Buscar TODOS os cursos
+// Buscar cursos com parâmetros opcionais
 export async function getCursos({ nomeCurso, modalidadeId, professorId } = {}) {
   const params = new URLSearchParams();
 
