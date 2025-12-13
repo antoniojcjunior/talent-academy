@@ -1,6 +1,6 @@
 import { carregarSelectCidade, carregarSelect } from '../utils/carregar-select.util.js';
 import { executarPesquisaProfessores, getProfessorPorId } from '../service/professor.service.js';
-import { formatarMoedaBR, formatarDataBR } from '../utils/util.util.js';
+import { formatarMoedaBR, formatarDataBR, formatCpf } from '../utils/util.util.js';
 
 import { API_BASE } from '../config.js';
 
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('Página de detalhamento de professor carregada. ID:', id);
       // Preencher o HTML 
     document.getElementById('professor-nome').textContent = professor.nome || '-';
-    document.getElementById('professor-cpf').textContent = professor.cpf || '-';
+    document.getElementById('professor-cpf').textContent = formatCpf(professor.cpf) || '-';
     document.getElementById('professor-telefone').textContent = professor.telefone || '-';
     document.getElementById('professor-valor-hora').textContent = professor.valor_hora_aula != null ? `R$ ${Number(professor.valor_hora_aula).toFixed(2)}` : '-';
     document.getElementById('professor-cidade').textContent = professor.cidade_nome || '-';

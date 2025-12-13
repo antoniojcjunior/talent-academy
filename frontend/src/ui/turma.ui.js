@@ -48,12 +48,16 @@ export function renderTabelaTurmas(containerEl, turmas) {
       <td class="col-left">${formatarDataBR(String(p.data_fim ?? ''))}</td>
       <td class="text-center">${escapeHtml(String(p.cidade_nome ?? ''))}</td>
       <td class="text-center acoes">
-        <div class="acoes-wrapper">
-          <button class="btn-deletar btn-delete-turma" data-id="${p.id}" data-nome="${escapeHtml(`${p.curso_nome} - ${formatarDataBR(p.data_inicio)}`)}" title="Excluir">
-            <div class="acoes-icone">🗑️</div>
+        <div class="acoes-wrapper d-inline-flex gap-2 align-items-center">
+          <button class="btn-edit" data-id="${p.id}" data-nome="${escapeHtml(p.curso_nome ?? '')}" title="Editar">
+            <div class="acoes-icone">
+            <i class="bi bi-pencil"></i>
+            </div>
           </button>
-          <button class="btn-editar btn-edita-turma" data-id="${p.id}" data-nome="${escapeHtml(`${p.curso_nome} - ${formatarDataBR(p.data_inicio)}`)}" title="Editar">
-            <div class="acoes-icone">🖊️</div>
+          <button class="btn-detail" data-id="${p.id}" data-nome="${escapeHtml(p.curso_nome ?? '')}" title="Detalhar">
+            <div class="acoes-icone">
+            <i class="bi bi-search"></i>
+            </div>
           </button>
         </div>
       </td>

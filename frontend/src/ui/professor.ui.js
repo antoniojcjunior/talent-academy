@@ -46,7 +46,7 @@ export function renderTabelaProfessores(containerEl, professores) {
       <td class="col-left">${escapeHtml(String(p.cidade_nome ?? ''))}</td>
       <td class="text-end">${formatarMoedaBR(p.valor_hora_aula ?? '')}</td>
       <td class="text-center acoes">
-        <div class="acoes-wrapper">
+        <div class="acoes-wrapper d-inline-flex gap-2 align-items-center">
           <button class="btn-edit" data-id="${p.id}" data-nome="${escapeHtml(p.nome ?? '')}" title="Editar">
             <div class="acoes-icone">
             <i class="bi bi-pencil"></i>

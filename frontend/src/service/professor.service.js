@@ -1,4 +1,4 @@
-import { getProfessores } from '../api/professor.api.js';
+import { getProfessores, getProfessorDetalhado } from '../api/professor.api.js';
 import { getCidadePorId } from '../api/cidade.api.js';
 import { renderTabelaProfessores } from '../ui/professor.ui.js';
 
@@ -11,8 +11,9 @@ export async function executarPesquisaProfessores() {
     const ufId = document.getElementById('uf')?.value || '';
     const cidadeId = document.getElementById('cidade')?.value || '';
     const nomeCurso = document.getElementById('nomeCurso')?.value || '';
-
-    const filtros = { cpf, nome, ufId, cidadeId, nomeCurso };
+    const status = document.getElementById('chkProfessoresAtivos')?.checked;
+    
+    const filtros = { cpf, nome, ufId, cidadeId, nomeCurso, status };
     console.log('Filtros usados na pesquisa de professores:', filtros);
     const professores = await getProfessores(filtros);
     console.log('Professores retornados:', professores);
@@ -38,6 +39,6 @@ export async function executarPesquisaProfessores() {
 }
 
 export async function getProfessorPorId(id) {
-  const lista = await getProfessores({ id });
-  return lista[0] || null;
+  const prof = await getProfessorDetalhado(id);
+  return prof || null;
 }

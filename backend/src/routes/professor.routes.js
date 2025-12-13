@@ -3,27 +3,19 @@ import { pool } from '../db.js';
 
 const router = express.Router();
 
-// rota para professores com filtros
+// GET /api/professores  (lista/pesquisa com filtros)
 router.get('/', async (req, res) => {
   console.log('Consulta professores recebida'); // Log no backend
   try {
     // Captura os filtros opcionais
-    const { id, cpf, nome, ufId, cidadeId, nomeCurso, status } = req.query;
+    const { cpf, nome, ufId, cidadeId, nomeCurso, status } = req.query;
 
     // Array que acumula as condições do WHERE
     const where = [];
-    //where.push("p.status = 'ATIVO'"); // Filtra apenas professores ativos
     // Array que acumula os valores para o prepared statement
     const params = [];
 
-    // -----------------------------
-    // Filtros opcionais
-    // -----------------------------
-    if (id) {
-      params.push(id);
-      where.push(`p.id = $${params.length}`);
-    }
-
+    // Filtros opcionais (lista/pesquisa)
     if (cpf) {
       params.push(cpf);
       where.push(`p.cpf = $${params.length}`);
@@ -52,9 +44,11 @@ router.get('/', async (req, res) => {
     // Se o frontend NÃO pedir status, traz só os ativos
     if (!status || status === 'ATIVO') {
       where.push("p.status = 'ATIVO'");
+    } else if (status === 'INATIVO') {
+      where.push("p.status = 'INATIVO'");
     }
     // Monta a query base
-     let sql = `
+    let sql = `
       SELECT DISTINCT
         p.id,
         p.cpf,
@@ -87,8 +81,8 @@ router.get('/', async (req, res) => {
     // Ordenação
     sql += ' ORDER BY p.nome';
 
-    console.log('SQL professores:', sql);
-    console.log('Parâmetros professores:', params);
+    console.log('SQL professores (lista/pesquisa):', sql);
+    console.log('Parâmetros professores (lista/pesquisa):', params);
 
     const { rows } = await pool.query(sql, params);
     res.json(rows);
@@ -96,6 +90,51 @@ router.get('/', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Erro ao consultar professores' });
+  }
+});
+
+// GET /api/professores/:id  (detalhar 1 professor)
+// NÃO filtra por status (traz ativo ou inativo)
+router.get('/:id', async (req, res) => {
+  const { id } = req.params;
+  console.log('Detalhar professor recebido. ID:', id);
+
+  try {
+    const sql = `
+      SELECT
+        p.id,
+        p.cpf,
+        p.nome,
+        p.telefone,
+        p.valor_hora_aula,
+        p.status,
+        p.data_nascimento,
+
+        cid.id AS cidade_id,
+        cid.nome AS cidade_nome,
+        uf.sigla AS uf_sigla
+
+      FROM professores p
+      LEFT JOIN cidades cid 
+        ON cid.id = p.cidade_id
+      LEFT JOIN estados uf
+        ON uf.id = cid.uf_id
+      WHERE p.id = $1
+    `;
+
+    console.log('SQL professor (detalhe):', sql);
+    console.log('Parâmetros professor (detalhe):', [id]);
+
+    const { rows } = await pool.query(sql, [id]);
+
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'Professor não encontrado' });
+    }
+
+    return res.json(rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao detalhar professor' });
   }
 });
 

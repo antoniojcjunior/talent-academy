@@ -8,7 +8,7 @@ router.get('/', async (req, res) => {
   console.log('Consulta turmas recebida');
   try {
     // Filtros opcionais vindos da query string
-    const { professorId, statusId, cursoId, ufId, cidadeId } = req.query;
+    const { professorId, statusId, cursoId, ufId, cidadeId, dataInicio, dataFim } = req.query;
 
     const where = [];
     const params = [];
@@ -45,6 +45,17 @@ router.get('/', async (req, res) => {
     if (cidadeId) {
       params.push(cidadeId);
       where.push(`cid.id = $${params.length}`);
+    }
+
+    if (dataInicio && dataFim) { //quando ambas são preenchidas
+        where.push(`t.data_inicio <= $${params.length + 2} AND t.data_fim >= $${params.length + 1}`);
+        params.push(dataInicio, dataFim);
+    } else if (dataInicio) { //somente data inicio preenchida
+        where.push(`t.data_inicio >= $${params.length + 1}`);
+        params.push(dataInicio);
+    } else if (dataFim) {
+        where.push(`t.data_inicio <= $${params.length + 1}`);
+        params.push(dataFim);
     }
 
     let sql = `

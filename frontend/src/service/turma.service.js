@@ -12,7 +12,6 @@ export async function executarPesquisaTurmas() {
     const ufId = document.getElementById('uf')?.value || '';
     const cidadeId = document.getElementById('cidade')?.value || '';
     const professorId = document.getElementById('professor')?.value || '';
-    const status = document.getElementById('status_turma')?.value || '';
     const dataInicio = document.getElementById('dataInicio')?.value || '';
     const dataFim = document.getElementById('dataFim')?.value || '';
     //Captura dos valores do Tom Select -->>
