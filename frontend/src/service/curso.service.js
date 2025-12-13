@@ -1,5 +1,4 @@
-import { getCursos } from '../api/curso.api.js';
-import { getModalidadePorId } from '../api/modalidade.api.js';
+import { getCursos, getCursoDetalhado } from '../api/curso.api.js';
 import { renderTabelaCursos } from '../ui/curso.ui.js';
 
 export async function executarPesquisaCursos() {
@@ -31,5 +30,25 @@ export async function executarPesquisaCursos() {
       renderTabelaCursos(container, []);
     }
     return [];
+  }
+}
+
+export async function executarPesquisaCursosDetalhado(id) {
+  if (!id) {
+    throw new Error('ID do curso não informado para detalhamento.');
+  }
+
+  try {
+    const detalhe = await getCursoDetalhado(id);
+
+    // Normalização defensiva (garante formato previsível)
+    return {
+      curso: detalhe.curso ?? null,
+      professores: Array.isArray(detalhe.professores) ? detalhe.professores : []
+    };
+
+  } catch (err) {
+    console.error('Erro ao obter detalhamento do curso:', err);
+    throw err;
   }
 }

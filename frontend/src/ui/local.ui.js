@@ -48,7 +48,7 @@ export function renderTabelaLocais(containerEl, locais) {
         <td class="text-start">${escapeHtml(l.bairro ?? '')}</td>
         <td class="text-end">${formatarMoedaBR(l.valor_aluguel_dia)}</td>
         <td class="text-center acoes">
-          <div class="acoes-wrapper">
+          <div class="acoes-wrapper d-inline-flex gap-2 align-items-center">
             <button class="btn-delete" data-id="${l.id}" data-nome="${escapeHtml(l.nome ?? '')}" title="Excluir">
               <div class="acoes-icone">
               <i class="bi bi-trash"></i>

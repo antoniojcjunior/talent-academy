@@ -3,13 +3,15 @@ import { pool } from '../db.js';
 
 const router = express.Router();
 
-// rota para cursos com filtros
+// ===============================
+// GET /api/cursos  (lista/pesquisa)
+// ===============================
 router.get('/', async (req, res) => {
   console.log('Consulta cursos recebida');
 
   try {
     // Captura os filtros opcionais
-    const { nomeCurso, modalidadeId, professorId } = req.query;
+    const { id, nomeCurso, modalidadeId, professorId } = req.query;
 
     // Array que acumula as condições do WHERE
     const where = [];
@@ -19,6 +21,10 @@ router.get('/', async (req, res) => {
     // -----------------------------
     // Filtros opcionais
     // -----------------------------
+    if (id) {
+      params.push(id);
+      where.push(`c.id = $${params.length}`);
+    }
 
     if (nomeCurso) {
       params.push(`%${nomeCurso}%`);
@@ -63,14 +69,81 @@ router.get('/', async (req, res) => {
     sql += ' ORDER BY c.nome';
 
     // Executa
-    console.log('SQL cursos:', sql);
-    console.log('Parâmetros cursos:', params);
-    const { rows } = await pool.query(sql, params);
+    console.log('SQL cursos (lista/pesquisa):', sql);
+    console.log('Parâmetros cursos (lista/pesquisa):', params);
 
+    const { rows } = await pool.query(sql, params);
     res.json(rows);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Erro ao consultar cursos' });
+  }
+});
+
+// ======================================
+// GET /api/cursos/:id  (detalhar 1 curso)
+// Retorna: { curso: {...}, professores: [...] }
+// ======================================
+router.get('/:id', async (req, res) => {
+  const { id } = req.params;
+  console.log('Detalhar curso recebido. ID:', id);
+
+  try {
+    // 1) Curso (1 registro)
+    const sqlCurso = `
+      SELECT
+        c.id,
+        c.nome,
+        c.carga_horaria_horas,
+        c.valor_padrao_inscricao,
+
+        -- Modalidade
+        c.modalidade_id,
+        m.nome AS modalidade_nome
+      FROM cursos c
+      LEFT JOIN modalidades m
+        ON m.id = c.modalidade_id
+      WHERE c.id = $1
+    `;
+
+    console.log('SQL curso (detalhe):', sqlCurso);
+    console.log('Parâmetros curso (detalhe):', [id]);
+
+    const cursoResult = await pool.query(sqlCurso, [id]);
+
+    if (cursoResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Curso não encontrado' });
+    }
+
+    const curso = cursoResult.rows[0];
+
+    // 2) Professores do curso (N registros)
+    const sqlProfessores = `
+      SELECT
+        p.id,
+        p.nome,
+        p.telefone,
+        p.valor_hora_aula
+      FROM professores_cursos pc
+      JOIN professores p
+        ON p.id = pc.professor_id
+      WHERE pc.curso_id = $1
+      ORDER BY p.nome
+    `;
+
+    console.log('SQL professores (detalhe):', sqlProfessores);
+    console.log('Parâmetros professores (detalhe):', [id]);
+
+    const professoresResult = await pool.query(sqlProfessores, [id]);
+
+    // 3) Retorno unificado para o front renderizar topo + mini tabela
+    return res.json({
+      curso,
+      professores: professoresResult.rows
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao detalhar curso' });
   }
 });
 
