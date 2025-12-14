@@ -65,7 +65,7 @@ router.get('/', async (req, res) => {
         t.data_fim,
         t.hora_inicio,
         t.hora_fim,
-        t.dias_semana,
+        t.dias_aula,
 
         l.nome AS local_nome,
 
@@ -110,23 +110,74 @@ router.get('/', async (req, res) => {
   }
 });
 
-// DELETE /api/turmas/:id
-router.delete('/:id', async (req, res) => {
-  const { id } = req.params;
-  console.log('Requisição DELETE turma id:', id);
-
+// rota para turmas detalhado por ID
+router.get('/:id', async (req, res) => {
+  console.log('Detalhamento turma recebido');
   try {
-    const sql = 'DELETE FROM turmas WHERE id = $1';
-    const { rowCount } = await pool.query(sql, [id]);
+    const { id } = req.params;
 
-    if (rowCount === 0) {
+    // NOVO: validação básica
+    const turmaId = Number(id);
+    if (!Number.isInteger(turmaId) || turmaId <= 0) {
+      return res.status(400).json({ error: 'ID inválido' });
+    }
+
+    const sql = `
+      SELECT
+        t.id,
+        t.data_inicio,
+        t.data_fim,
+        t.hora_inicio,
+        t.hora_fim,
+        t.dias_aula,
+
+        t.curso_id,
+        t.professor_id,
+        t.local_id,
+        t.status_turma_id,
+        t.modalidade_id,
+        t.custo_professor,
+        t.valor_negociado_professor,
+
+        l.nome AS local_nome,
+
+        cid.nome AS cidade_nome,
+        uf.sigla AS uf_sigla,
+
+        c.nome AS curso_nome,
+        p.nome AS professor_nome,
+        st.descricao AS status_nome,
+        m.nome AS modalidade_nome
+      FROM turmas t
+      LEFT JOIN cursos c
+        ON c.id = t.curso_id
+      LEFT JOIN professores p
+        ON p.id = t.professor_id
+      LEFT JOIN locais l
+        ON l.id = t.local_id
+      LEFT JOIN cidades cid
+        ON cid.id = l.cidade_id
+      LEFT JOIN estados uf
+        ON uf.id = cid.uf_id
+      LEFT JOIN status_turma st
+        ON st.id = t.status_turma_id
+      LEFT JOIN modalidades m
+        ON m.id = t.modalidade_id
+      WHERE t.id = $1
+      LIMIT 1
+    `;
+
+    const { rows } = await pool.query(sql, [turmaId]);
+    console.log('SQL turmas por ID:', sql);
+    // NOVO: 404 se não achar
+    if (rows.length === 0) {
       return res.status(404).json({ error: 'Turma não encontrada' });
     }
 
-    return res.status(204).send();
+    return res.json(rows[0]);
   } catch (err) {
-    console.error('Erro ao deletar turma:', err);
-    return res.status(500).json({ error: 'Erro ao deletar turma' });
+    console.error('Erro ao detalhar turma:', err);
+    return res.status(500).json({ error: 'Erro ao detalhar turma' });
   }
 });
 

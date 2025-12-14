@@ -1,4 +1,4 @@
-import { getTurmas } from '../api/turma.api.js';
+import { getTurmas, getTurmaPorId  } from '../api/turma.api.js';
 import { renderTabelaTurmas } from '../ui/turma.ui.js';
 import { deleteTurma } from '../api/turma.api.js';
 import { showConfirm, showAlert } from '../utils/show-alert.util.js'; 
@@ -46,6 +46,25 @@ export async function executarPesquisaTurmas() {
     return [];
   }
 }
+
+// Obter detalhamento de uma turma por ID
+export async function obterTurmaPorId(turmaId) {
+  try {
+    if (!turmaId) {
+      throw new Error('ID da turma não informado.');
+    }
+
+    const turma = await getTurmaPorId(turmaId);
+    console.log('Turma detalhada:', turma);
+
+    return turma;
+  } catch (err) {
+    console.error('Erro ao obter turma por ID:', err);
+    showAlert('Não foi possível carregar o detalhamento da turma.');
+    throw err;
+  }
+}
+
 
 export async function excluirTurma(id, nomeTurma) {
   if (!id) {

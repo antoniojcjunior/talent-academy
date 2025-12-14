@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Talent Academy</title>
+  <title>Talent Academy - Detalhe da Turma</title>
   <link rel="icon" type="image/png" href="../../../favicon-ta.png">
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -18,12 +18,10 @@
     crossorigin="anonymous"
     onerror="this.removeAttribute('integrity'); this.href='../../../assets/lib/tom-select/tom-select.2.3.1.css';"/>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="../../../assets/css/components/tom.select.css">
   <link rel="stylesheet" href="../../../assets/css/main.css">
   <link rel="stylesheet" href="../../../assets/css/sections/sidebar.css">
-  
 </head>
-<body data-page="turmas-pesquisa" class="bg-body-tertiary">
+<body data-page="turmas-detalhar" class="bg-body-tertiary">
   <!-- Barra superior -->
   <nav class="navbar navbar-dark bg-dark shadow-sm">
     <div class="container-fluid d-flex align-items-center justify-content-between">
@@ -42,6 +40,7 @@
       </div>
     </div>
   </nav>
+
   <div class="container-fluid p-0"> 
     <div class="d-flex">
       <!-- Sidebar -->
@@ -58,118 +57,100 @@
           <a class="nav-link d-flex align-items-center gap-2" href="../cursos/cursos.html">
             <i class="bi bi-journal-bookmark"></i>
             <span class="sidebar-text">Cursos</span>
-            </a>
+          </a>
           <a class="nav-link d-flex align-items-center gap-2" href="../professores/professores.html">
             <i class="bi bi-person-badge"></i>
             <span class="sidebar-text">Professores</span>
-            </a>
+          </a>
           <a class="nav-link d-flex align-items-center gap-2" href="../locais/locais.html">
             <i class="bi bi-geo-alt"></i>
             <span class="sidebar-text">Locais</span>
-            </a>
+          </a>
           <hr class="my-3">
           <span class="text-uppercase sidebar-title fw-semibold mb-2 px-3">
             Turmas
           </span>
-          <a class="nav-link d-flex align-items-center gap-2 active" href="../turmas/turmas.html">
+          <a class="nav-link d-flex align-items-center gap-2" href="../turmas/turmas.html">
             <i class="bi bi-people"></i>
             <span class="sidebar-text">Turmas</span>
-            </a>
+          </a>
         </nav>
       </aside>
+
       <!-- Conteúdo principal -->
       <main class="flex-grow-1 p-4">
         <!-- Cabeçalho da tela -->
         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-4">
           <div>
-            <h1 class="h4 mb-0">Turmas</h1>
-            <small class="text-muted">Cadastro e manutenção das turmas.</small>
+            <h1 class="h4 mb-0">Detalhe da Turma</h1>
+            <small class="text-muted">Visualize as informações da turma selecionada.</small>
           </div>
-          <button class="btn btn-primary">
-            Nova turma
-          </button>
         </div>
-        <!-- Filtros / barra de ações -->
-       <form>
-        <div class="card mb-3">
-          <div class="card-body py-3">
-            <!-- Linha 1: Curso, UF e Cidade -->
-            <div class="row g-2 mb-3 align-items-end">
-              <div class="col-sm-6 col-md-4 col-lg-6">
-                <label class="form-label form-label-sm">Curso</label>
-                <select id="curso" name="curso" class="form-select form-select-sm" data-placeholder="Selecione o Curso">
-                  <option value="">Todos</option>
-                </select>
-              </div>
-              <div class="col-sm-6 col-md-4 col-lg-1">
-                <label class="form-label form-label-sm">UF</label>
-                <select class="form-select form-select-sm" id="uf" name="uf" data-placeholder="UF">
-                  <option value="" disabled selected>UF</option>
-                </select>
-              </div>
-              <div class="col-sm-6 col-md-4 col-lg-5">
-                <label class="form-label form-label-sm">Cidade</label>
-                <select class="form-select form-select-sm" id="cidade" name="cidade">
-                  <option value="">Todas</option>
-                </select>
-              </div>
-            </div>
-            <!-- Linha 2: Professor e Status da turma -->
-            <div class="row g-2 mb-3 align-items-end">
-              <div class="col-sm-6 col-md-6 col-lg-6">
-                <label class="form-label form-label-sm">Professor</label>
-                <select id="professor" name="professor" class="form-select form-select-sm" data-placeholder="Selecione o Professor">
-                  <option value="">Todos</option>
-                </select>
-              </div>
-              <div class="col-sm-3 col-md-4 col-lg-3">
-                <label class="form-label form-label-sm">Data de início</label>
-                <input class="form-control form-control-sm"
-                type="date"
-                id="dataInicio"
-                name="dataInicio"
-                placeholder="dd/mm/aaaa"
-                maxlength="10"            
-                inputmode="numeric"/>
-              </div>
-              <div class="col-sm-3 col-md-4 col-lg-3">
-                <label class="form-label form-label-sm">Data de fim</label>
-                <input class="form-control form-control-sm"
-                type="date"
-                id="dataFim"
-                name="dataFim"
-                placeholder="dd/mm/aaaa"
-                maxlength="10"            
-                inputmode="numeric"/>
-              </div>
-              
-            </div>
-            <!-- Linha 4: Select Multiplo -->
-            <div class="row g-2 align-items-end mb-3">
-              <div class="col-sm-6 col-md-6 col-lg-6">
-                <label for="status-turma-multi" class="form-label">Status da turma</label>
-                <!-- 1) Fallback (Bootstrap) — aparece imediatamente -->
-                <select class="form-select form-select-sm" id="status-turma-multi-fallback" 
-                  aria-label="Status da turma (carregando)">
-                  <option value="" selected disabled>Carregando...</option>
-                </select>
 
-                <!-- 2) Select real do Tom Select (sem form-select!) -->
-                <select id="status-turma-multi" class="ts-bootstrap d-none" multiple></select>
+        <!-- Dados da turma -->
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="row mb-3">
+              <div class="col-sm-12 col-md-6 col-lg-9">
+                <label class="form-label form-label-sm">Nome do Curso</label>
+                <p id="turma-nome-curso" class="p-2 border rounded form-control-plaintext">Carregando...</p>
+              </div>
+              <div class="col-sm-12 col-md-6 col-lg-3">
+                <label class="form-label form-label-sm">Status da Turma</label>
+                <p id="turma-status" class="p-2 border rounded form-control-plaintext">Carregando...</p>
               </div>
             </div>
-            <!-- Linha 5: Botões -->
-            <div class="row g-2 align-items-end justify-content-end">
-              <div class="col-auto">
-                <button type="submit" class="btn btn-outline-secondary btn-sm">Pesquisar</button>
-                <button id="Limpar" type="button" class="btn btn-outline-secondary btn-sm bg-light">Limpar</button>
+            <div class="row mb-3">
+              <div class="col-sm-12 col-md-6 col-lg-6">
+                <label class="form-label form-label-sm">Nome do Professor</label>
+                <p id="turma-nome-professor" class="p-2 border rounded form-control-plaintext">Carregando...</p>
+              </div>
+              <div class="col-sm-12 col-md-6 col-lg-6">
+                <label class="form-label form-label-sm">Nome do Local</label>
+                <p id="turma-nome-local" class="p-2 border rounded form-control-plaintext">Carregando...</p>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-sm-12 col-md-8 col-lg-4">
+                  <label class="form-label form-label-sm">Período:</label>
+                  <p id="turma-data-intervalo" class="p-2 border rounded form-control-plaintext">Carregando...</p>
+              </div>
+              <div class="col-sm-12 col-md-4 col-lg-3">
+                  <label class="form-label form-label-sm">Horário:</label>
+                  <p id="turma-horario-intervalo" class="p-2 border rounded form-control-plaintext">Carregando...</p>
+              </div>
+              <div class="col-sm-12 col-md-6 col-lg-3">
+                <label class="form-label form-label-sm">Modalidade</label>
+                <p id="turma-modalidade" class="p-2 border rounded form-control-plaintext">Carregando...</p>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-sm-12 col-md-6 col-lg-6">
+                <label class="form-label form-label-sm">Dias da Semana</label>
+                <div id="turma-dias-indicador" class="dias-indicador-container">
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-sm-12 col-md-6 col-lg-3">
+                <label class="form-label form-label-sm">Custo Professor</label>
+                <p id="turma-custo-professor" class="p-2 border rounded form-control-plaintext">Carregando...</p>
+              </div>
+              <div class="col-sm-12 col-md-6 col-lg-3">
+                <label class="form-label form-label-sm">Valor Negociado Prof.</label>
+                <p id="turma-valor-negociado-professor" class="p-2 border rounded form-control-plaintext">Carregando...</p>
+              </div>
+            </div>
+
+            <!-- Ações ao final (botões somente no final da página) -->
+            <div class="row">
+              <div class="col-12 d-flex justify-content-end gap-2">
+                <button id="editar-rodape" class="btn btn-outline-secondary btn-sm">Editar</button>
+                <a href="turmas.html" class="btn btn-outline-secondary btn-sm bg-light">Voltar</a>
               </div>
             </div>
           </div>
         </div>
-       </form>
-        <!-- Tabela -->
-        <section id="resultados-tabela-turmas" class="mt-3 p-2"></section>
       </main>
     </div>
   </div>
@@ -184,7 +165,6 @@
   integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
   crossorigin="anonymous">
   </script>
-  <!-- biblioteca Tom Select -->
    <script 
   src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"
   integrity="sha384-cnROoUgVILyibe3J0zhzWoJ9p2WmdnK7j/BOTSWqVDbC1pVw2d+i6Q/1ESKJKCYf"
@@ -203,4 +183,4 @@
 <script type="module" src="../../utils/modal-global.js"></script>
 <script defer type="module" src="../../main/turma.main.js"></script>
 </body>
-
+</html>

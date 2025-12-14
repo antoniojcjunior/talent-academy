@@ -46,6 +46,33 @@ export async function getTurmas({
   }
 }
 
+// Buscar turma por ID (detalhamento)
+export async function getTurmaPorId(id) {
+  if (!id) {
+    throw new Error('ID da turma não informado.');
+  }
+
+  const url = `${API_BASE}/api/turmas/${encodeURIComponent(id)}`;
+
+  try {
+    const resp = await fetch(url);
+
+    if (resp.status === 404) {
+      throw new Error('Turma não encontrada.');
+    }
+
+    if (!resp.ok) {
+      throw new Error(`Erro ao buscar turma: ${resp.status}`);
+    }
+
+    return await resp.json(); // vem um objeto (rows[0])
+  } catch (err) {
+    console.error('Falha em getTurmaPorId():', err);
+    throw err;
+  }
+}
+
+
 export async function deleteTurma(id) {
   if (!id) {
     throw new Error('ID da turma é obrigatório para exclusão.');

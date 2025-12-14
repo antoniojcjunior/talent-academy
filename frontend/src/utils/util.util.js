@@ -299,17 +299,85 @@ export function formatarDataBR(dataISO) {
     timeZone: 'UTC'  // evita problemas de fuso horário
   });
 }
-// Formata hora proveniente do BD (ISO 8601) para formato brasileiro (HH:MM)
-export function formatarHoraBR(dataISO) {
-  if (!dataISO) return '';
+// Apresenta intervalo de datas no formato brasileiro
+export function formatarIntervaloDataBR(dataInicioISO, dataFimISO) {
+  // Formata as datas individualmente
+  const dataInicioFormatada = formatarDataBR(dataInicioISO);
+  const dataFimFormatada = formatarDataBR(dataFimISO);
 
-  const data = new Date(dataISO);
-  if (isNaN(data)) return dataISO;
+  // Verifica se ambas as datas são válidas
+  if (dataInicioFormatada && dataFimFormatada) {
+    return `${dataInicioFormatada} a ${dataFimFormatada}`;
+  }
 
-  return data.toLocaleTimeString('pt-BR', {
-    hour: '2-digit',
-    minute: '2-digit',
-    timeZone: 'UTC' // impede variação de fuso
-  });
+  // Se apenas uma for válida, retorna apenas ela
+  if (dataInicioFormatada) {
+    return dataInicioFormatada;
+  }
+  
+  return dataFimFormatada || '-'; // Retorna a data fim ou '-'
 }
 
+// Formata hora proveniente do BD (ISO 8601) para formato brasileiro (HH:MM)
+export function formatarHoraBR(dataISO) {
+  // 1. Verifica se a entrada existe
+  if (!dataISO || typeof dataISO !== 'string') {
+    return '';
+  }
+  // 2. Verifica se a string tem pelo menos o formato HH:mm (5 caracteres)
+  if (dataISO.length >= 5) {
+    // Retorna apenas os 5 primeiros caracteres (HH:mm)
+    return dataISO.substring(0, 5); 
+  }
+  // 3. Se por algum motivo a string for menor que 5 caracteres, retorna vazio ou a string original
+  return dataISO;
+}
+// Apresenta intervalo de horas no formato brasileiro
+export function formatarIntervaloHoraBR(horaInicioISO, horaFimISO) {
+  const horaInicioFormatada = formatarHoraBR(horaInicioISO);
+  const horaFimFormatada = formatarHoraBR(horaFimISO);
+
+  // Verifica se ambos os horários são válidos
+  if (horaInicioFormatada && horaFimFormatada) {
+    return `${horaInicioFormatada} a ${horaFimFormatada}`;
+  }
+
+  // Se apenas um for válido, retorna apenas ele
+  if (horaInicioFormatada) {
+    return horaInicioFormatada;
+  }
+  
+  return horaFimFormatada || '-'; // Retorna o horário fim ou '-'
+}
+// Mapa de letras para os dias da semana (0 = Domingo, 1 = Segunda, ..., 6 = Sábado)
+const MAPA_LETRAS_DIAS = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
+export function injetarIndicadorDias(indicesDias) {
+  const container = document.getElementById('turma-dias-indicador');
+  
+  if (!container) return;
+
+  // Garante que indicesDias é um array, mesmo que venha nulo/undefined
+  const diasAtivos = Array.isArray(indicesDias) ? indicesDias : [];
+
+  container.innerHTML = ''; 
+
+  // Se não houver dias, exibe uma mensagem
+  if (diasAtivos.length === 0) {
+    container.textContent = 'Dias não informados';
+    return;
+  }
+
+  // Itera sobre o mapa de letras de D a S
+  MAPA_LETRAS_DIAS.forEach((letra, index) => {
+    const span = document.createElement('span');
+    span.textContent = letra;
+    span.classList.add('dia-indicador');
+
+    // Verifica se o índice está presente no array
+    if (diasAtivos.includes(index)) {
+      span.classList.add('active');
+    }
+
+    container.appendChild(span);
+  });
+}
