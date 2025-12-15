@@ -8,7 +8,7 @@ router.get('/', async (req, res) => {
   console.log('Consulta turmas recebida');
   try {
     // Filtros opcionais vindos da query string
-    const { professorId, statusId, cursoId, ufId, cidadeId, dataInicio, dataFim } = req.query;
+    const { professorId, modalidadeId, statusId, cursoId, ufId, cidadeId, dataInicio, dataFim } = req.query;
 
     const where = [];
     const params = [];
@@ -18,6 +18,11 @@ router.get('/', async (req, res) => {
       where.push(`t.professor_id = $${params.length}`);
     }
 
+    if (modalidadeId) {
+      params.push(modalidadeId);
+      where.push(`t.modalidade_id = $${params.length}`);
+    }
+    
     // STATUS múltiplo (string OU array)
     if (statusId) {
       if (Array.isArray(statusId)) {

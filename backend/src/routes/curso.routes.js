@@ -32,38 +32,55 @@ router.get('/', async (req, res) => {
     }
 
     if (modalidadeId) {
-      params.push(modalidadeId);
-      where.push(`c.modalidade_id = $${params.length}`);
+    params.push(modalidadeId);
+    where.push(`
+      EXISTS (
+        SELECT 1
+        FROM turmas t2
+        WHERE t2.curso_id = c.id
+          AND t2.modalidade_id = $${params.length}
+      )
+    `);
     }
 
     if (professorId) {
       params.push(professorId);
-      where.push(`pc.professor_id = $${params.length}`);
+      where.push(`
+        EXISTS (
+          SELECT 1
+          FROM professores_cursos pc2
+          WHERE pc2.curso_id = c.id
+            AND pc2.professor_id = $${params.length}
+        )
+      `);
     }
 
     // Monta a query base
     let sql = `
-      SELECT DISTINCT
+      SELECT
         c.id,
         c.nome,
         c.carga_horaria_horas,
         c.valor_padrao_inscricao,
-
-        -- Modalidade
-        c.modalidade_id,
-        m.nome AS modalidade_nome
-
+        ARRAY_REMOVE(ARRAY_AGG(DISTINCT t.modalidade_id), NULL) AS modalidades_disponiveis
       FROM cursos c
-      LEFT JOIN professores_cursos pc
-        ON pc.curso_id = c.id
-      LEFT JOIN modalidades m
-        ON m.id = c.modalidade_id
+      LEFT JOIN turmas t
+        ON t.curso_id = c.id
     `;
 
     // Se existirem filtros, adiciona WHERE
     if (where.length > 0) {
       sql += ' WHERE ' + where.join(' AND ');
     }
+
+    // GROUP BY
+    sql += `
+      GROUP BY
+        c.id,
+        c.nome,
+        c.carga_horaria_horas,
+        c.valor_padrao_inscricao
+    `;
 
     // Ordenação
     sql += ' ORDER BY c.nome';
@@ -97,13 +114,13 @@ router.get('/:id', async (req, res) => {
         c.carga_horaria_horas,
         c.valor_padrao_inscricao,
 
-        -- Modalidade
-        c.modalidade_id,
-        m.nome AS modalidade_nome
+      -- Modalidades disponíveis nas turmas
+      ARRAY_AGG(DISTINCT t.modalidade_id) AS modalidades_disponiveis
       FROM cursos c
-      LEFT JOIN modalidades m
-        ON m.id = c.modalidade_id
+      LEFT JOIN turmas t
+        ON t.curso_id = c.id
       WHERE c.id = $1
+      GROUP BY c.id
     `;
 
     console.log('SQL curso (detalhe):', sqlCurso);
