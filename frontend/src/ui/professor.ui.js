@@ -47,14 +47,14 @@ export function renderTabelaProfessores(containerEl, professores) {
       <td class="text-end">${formatarMoedaBR(p.valor_hora_aula ?? '')}</td>
       <td class="text-center acoes">
         <div class="acoes-wrapper d-inline-flex gap-2 align-items-center">
-          <button class="btn-edit" data-id="${p.id}" data-nome="${escapeHtml(p.nome ?? '')}" title="Editar">
-            <div class="acoes-icone">
-            <i class="bi bi-pencil"></i>
-            </div>
-          </button>
           <button class="btn-detail" data-id="${p.id}" data-nome="${escapeHtml(p.nome ?? '')}" title="Detalhar">
             <div class="acoes-icone">
             <i class="bi bi-search"></i>
+            </div>
+          </button>
+          <button class="btn-edit" data-id="${p.id}" data-nome="${escapeHtml(p.nome ?? '')}" title="Editar">
+            <div class="acoes-icone">
+            <i class="bi bi-pencil"></i>
             </div>
           </button>
         </div>

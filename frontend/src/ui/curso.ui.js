@@ -1,5 +1,24 @@
 import { escapeHtml, formatarMoedaBR } from '../utils/util.util.js';
 
+// Renderiza ícones das modalidades disponíveis
+function renderModalidadesIcons(modalidades) {
+  if (!Array.isArray(modalidades) || modalidades.length === 0) {
+    return '<span style="opacity:.6;">—</span>';
+  }
+
+  const ICONES_MODALIDADE = {
+    1: '<i class="bi bi-laptop text-primary" title="Online"></i>',
+    2: '<i class="bi bi-geo-alt text-primary" title="Presencial"></i>',
+    3: '<i class="bi bi-h-circle text-primary" title="Híbrida"></i>'
+  };
+
+  return modalidades
+    .filter(id => ICONES_MODALIDADE[id]) // remove null / desconhecidos
+    .sort((a, b) => a - b)               // ordem visual previsível
+    .map(id => ICONES_MODALIDADE[id])
+    .join(' ');
+}
+
 export function renderTabelaCursos(containerEl, cursos) {
   if (!containerEl) return;
 
@@ -43,18 +62,18 @@ export function renderTabelaCursos(containerEl, cursos) {
       <tr>
         <td>${escapeHtml(l.nome ?? '')}</td>
         <td class="text-center">${escapeHtml(l.carga_horaria_horas ?? '')}</td>
-        <td>${escapeHtml(l.modalidade_nome ?? '')}</td>
+        <td class="text-center">${renderModalidadesIcons(l.modalidades_disponiveis)}</td>
         <td class="text-end">${formatarMoedaBR(l.valor_padrao_inscricao ?? '')}</td>
         <td class="text-center acoes">
           <div class="acoes-wrapper d-inline-flex gap-2 align-items-center"">
-            <button class="btn-delete" data-id="${l.id}" data-nome="${escapeHtml(l.nome ?? '')}" title="Excluir">
-              <div class="acoes-icone">
-              <i class="bi bi-trash"></i>
-              </div>
-            </button>
             <button class="btn-detail" data-id="${l.id}" data-nome="${escapeHtml(l.nome ?? '')}" title="Editar">
               <div class="acoes-icone">
               <i class="bi bi-search"></i>
+              </div>
+            </button>
+            <button class="btn-delete" data-id="${l.id}" data-nome="${escapeHtml(l.nome ?? '')}" title="Excluir">
+              <div class="acoes-icone">
+              <i class="bi bi-pencil"></i>
               </div>
             </button>
           </div>

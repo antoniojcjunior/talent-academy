@@ -6,10 +6,11 @@ export async function executarPesquisaCursos() {
     const container = document.getElementById('resultados-tabela-cursos');
     // Ler os filtros da tela
     const nomeCurso = document.getElementById('nomeCurso')?.value || '';
-    const modalidadeId = document.getElementById('modalidade')?.value || '';
-    const professorId = document.getElementById('professor')?.value || '';
+    const modalidadeId = document.getElementById('modalidade')?.value || undefined;
+    const professorId = document.getElementById('professor')?.value || undefined;
 
-    const filtros = { nomeCurso, modalidadeId, professorId };
+    //garante que somente filtros realmente preenchidos sejam enviados ao getCursos
+    const filtros = { nomeCurso, ...(modalidadeId && { modalidadeId }), ...(professorId && { professorId }) };
     console.log('Filtros usados na pesquisa de cursos:', filtros);
     const cursos = await getCursos(filtros);
     console.log('Cursos retornados:', cursos);

@@ -8,12 +8,19 @@ export async function executarPesquisaProfessores() {
     // Ler os filtros da tela
     const cpf = document.getElementById('cpf')?.value || '';
     const nome = document.getElementById('nome')?.value || '';
-    const ufId = document.getElementById('uf')?.value || '';
-    const cidadeId = document.getElementById('cidade')?.value || '';
     const nomeCurso = document.getElementById('nomeCurso')?.value || '';
+    const ufId = document.getElementById('uf')?.value || undefined;
+    const cidadeId = document.getElementById('cidade')?.value || undefined;
     const status = document.getElementById('chkProfessoresAtivos')?.checked;
     
-    const filtros = { cpf, nome, ufId, cidadeId, nomeCurso, status };
+    const filtros = {
+      ...(cpf && { cpf }),
+      ...(nome && { nome }),
+      ...(ufId && { ufId }),
+      ...(cidadeId && { cidadeId }),
+      ...(nomeCurso && { nomeCurso }),
+      ...(status !== undefined && { status })
+    };
     console.log('Filtros usados na pesquisa de professores:', filtros);
     const professores = await getProfessores(filtros);
     console.log('Professores retornados:', professores);

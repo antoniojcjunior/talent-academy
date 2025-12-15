@@ -8,10 +8,11 @@ export async function executarPesquisaTurmas() {
     const container = document.getElementById('resultados-tabela-turmas');
 
     // Ler os filtros da tela (IDs usados conforme padrão das páginas)
-    const cursoId = document.getElementById('curso')?.value || '';
-    const ufId = document.getElementById('uf')?.value || '';
-    const cidadeId = document.getElementById('cidade')?.value || '';
-    const professorId = document.getElementById('professor')?.value || '';
+    const cursoId     = document.getElementById('curso')?.value || undefined;
+    const ufId        = document.getElementById('uf')?.value || undefined;
+    const cidadeId    = document.getElementById('cidade')?.value || undefined;
+    const professorId = document.getElementById('professor')?.value || undefined;
+    const modalidadeId = document.getElementById('modalidade')?.value || undefined;
     const dataInicio = document.getElementById('dataInicio')?.value || '';
     const dataFim = document.getElementById('dataFim')?.value || '';
     //Captura dos valores do Tom Select -->>
@@ -19,7 +20,16 @@ export async function executarPesquisaTurmas() {
     // Coleta todos os valores selecionados. Retorna um Array de strings.
     const statusSelecionados = statusSelect.tomselect.items.slice();
 
-    const filtros = { cursoId, ufId, cidadeId, professorId, statusId: statusSelecionados, dataInicio, dataFim };
+    const filtros = {
+    ...(cursoId && { cursoId }),
+    ...(ufId && { ufId }),
+    ...(cidadeId && { cidadeId }),
+    ...(professorId && { professorId }),
+    ...(modalidadeId && { modalidadeId }),
+    ...(statusSelecionados.length > 0 && { statusId: statusSelecionados }),
+    ...(dataInicio && { dataInicio }),
+    ...(dataFim && { dataFim })
+    };
     console.log('Filtros usados na pesquisa de turmas:', filtros);
 
     const turmas = await getTurmas(filtros);

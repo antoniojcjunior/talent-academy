@@ -8,12 +8,17 @@ export async function executarPesquisaLocais() {
   try {
     const container = document.getElementById('resultados-tabela-locais');
     // Ler os filtros da tela
-    const ufId = document.getElementById('uf')?.value || '';
-    const cidadeId = document.getElementById('cidade')?.value || '';
+    const ufId = document.getElementById('uf')?.value || undefined;
+    const cidadeId = document.getElementById('cidade')?.value || undefined;
     const nome = document.getElementById('nomeLocal')?.value || '';
     const bairro = document.getElementById('bairro')?.value || '';
 
-    const filtros = { ufId, cidadeId, nome, bairro };
+    const filtros = {
+      ...(ufId && { ufId }),
+      ...(cidadeId && { cidadeId }),
+      ...(nome && { nome }),
+      ...(bairro && { bairro })
+    };  
     console.log('Filtros usados na pesquisa de locais:', filtros);
 
     // Chamar a API com TODOS os filtros (a API ignora vazios)

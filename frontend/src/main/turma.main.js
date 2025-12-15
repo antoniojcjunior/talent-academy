@@ -14,6 +14,7 @@ const page = document.body.dataset.page || '';
 
   carregarSelect({ url: `${API_BASE}/api/cursos`, selectId: 'curso', labelCampo: 'nome' });
   carregarSelect({ url: `${API_BASE}/api/professores`, selectId: 'professor', labelCampo: 'nome' });
+  carregarSelect({ url: `${API_BASE}/api/modalidades`, selectId: 'modalidade', labelCampo: 'nome' });
   carregarSelect({ url: `${API_BASE}/api/ufs`, selectId: 'uf', labelCampo: 'sigla' });
   await carregarSelectCidade();
   //carregarSelect({ url: `${API_BASE}/api/status_turma`, selectId: 'status_turma', labelCampo: 'descricao' });

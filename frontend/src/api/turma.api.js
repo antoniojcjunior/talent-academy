@@ -6,6 +6,7 @@ export async function getTurmas({
   ufId,
   cidadeId,
   professorId,
+  modalidadeId,
   statusId,
   dataInicio,
   dataFim
@@ -17,6 +18,7 @@ export async function getTurmas({
   if (ufId) params.append('ufId', ufId);
   if (cidadeId) params.append('cidadeId', cidadeId);
   if (professorId) params.append('professorId', professorId);
+  if (modalidadeId) params.append('modalidadeId', modalidadeId);
   if (dataInicio) params.append('dataInicio', dataInicio);
   if (dataFim) params.append('dataFim', dataFim);
   // STATUS MULTIPLO (Tom Select)
