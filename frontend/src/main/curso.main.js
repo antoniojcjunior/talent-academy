@@ -2,6 +2,7 @@ import { formatarMoedaBR } from '../utils/util.util.js';
 import { carregarSelectCidade, carregarSelectMultiplo, carregarSelect, selectFilter } from '../utils/carregar-select.util.js';
 import { executarPesquisaCursos, executarPesquisaCursosDetalhado } from '../service/curso.service.js';
 import { renderTabelaProfessoresDoCurso } from '../ui/curso.ui.js';
+import { renderModalidadesIcons } from '../utils/renderModalidadesIcons.js';
 import { API_BASE } from '../config.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -66,7 +67,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
  }
 
-   // ==========================
+// ==========================
 // PÁGINA: CURSOS - DETALHAR
 // ==========================
 if (page === 'cursos-detalhar') {
@@ -82,7 +83,7 @@ if (page === 'cursos-detalhar') {
   }
 
   try {
-    // Agora o service retorna { curso, professores }
+    // service retorna { curso, professores }
     const { curso, professores } = await executarPesquisaCursosDetalhado(id);
 
     if (!curso) {
@@ -94,7 +95,12 @@ if (page === 'cursos-detalhar') {
     // Preencher o HTML (campos fixos)
     document.getElementById('curso-nome').textContent = curso.nome || '-';
     document.getElementById('curso-carga-horaria').textContent = curso.carga_horaria_horas || '-';
-    document.getElementById('curso-modalidade').textContent = curso.modalidade_nome || '-';
+    // Array de Modalidades do curso
+    const modalidadesArr = Array.isArray(curso.modalidades_disponiveis)
+      ? curso.modalidades_disponiveis
+      : [];
+    document.getElementById('curso-modalidade').innerHTML = renderModalidadesIcons(modalidadesArr);
+
     document.getElementById('curso-valor-inscricao').textContent =
     curso.valor_padrao_inscricao != null ? formatarMoedaBR(curso.valor_padrao_inscricao) : '-';
 

@@ -71,6 +71,7 @@ router.get('/', async (req, res) => {
         t.hora_inicio,
         t.hora_fim,
         t.dias_aula,
+        t.modalidade_id,
 
         l.nome AS local_nome,
 

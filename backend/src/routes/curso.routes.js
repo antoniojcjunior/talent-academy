@@ -123,8 +123,8 @@ router.get('/:id', async (req, res) => {
       GROUP BY c.id
     `;
 
-    console.log('SQL curso (detalhe):', sqlCurso);
-    console.log('Parâmetros curso (detalhe):', [id]);
+    //console.log('SQL curso (detalhe):', sqlCurso);
+    //console.log('Parâmetros curso (detalhe):', [id]);
 
     const cursoResult = await pool.query(sqlCurso, [id]);
 
@@ -148,8 +148,8 @@ router.get('/:id', async (req, res) => {
       ORDER BY p.nome
     `;
 
-    console.log('SQL professores (detalhe):', sqlProfessores);
-    console.log('Parâmetros professores (detalhe):', [id]);
+    //console.log('SQL professores (detalhe):', sqlProfessores);
+    //console.log('Parâmetros professores (detalhe):', [id]);
 
     const professoresResult = await pool.query(sqlProfessores, [id]);
 

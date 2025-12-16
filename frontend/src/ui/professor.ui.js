@@ -79,5 +79,68 @@ export function renderTabelaProfessores(containerEl, professores) {
   containerEl.scrollIntoView({ behavior: 'smooth' });
 }
 
+// Tabela Cursos do Professor (detalhamento)
+export function renderTabelaCursosDoProfessor(containerEl, cursos) {
+  if (!containerEl) return;
+
+  // Caso vazio
+  if (!Array.isArray(cursos) || cursos.length === 0) {
+    containerEl.innerHTML = `
+      <div class="table-responsive">
+        <table id="tabela-cursos-professor" class="table">
+          <tr>
+            <td colspan="2" class="text-center" style="opacity:.7;">
+              Nenhum curso vinculado a este professor
+            </td>
+          </tr>
+        </table>
+      </div>
+    `;
+    return;
+  }
+
+  const tableCaption = `
+    <caption class="caption-top">
+      <div class="caption-inner d-flex justify-content-between">
+        <span>Cursos do Professor</span>
+        <span class="badge bg-secondary">${cursos.length}</span>
+      </div>
+    </caption>
+  `;
+
+  const tableHeader = `
+    <thead class="table-secondary">
+      <tr>
+        <th class="align-middle">Curso</th>
+        <th class="text-center align-middle">Carga Horária</th>
+      </tr>
+    </thead>
+  `;
+
+  const tableRows = cursos
+    .map(c => `
+      <tr>
+        <td>${escapeHtml(c.nome ?? '')}</td>
+        <td class="text-center">${c.carga_horaria_horas ?? '-'}</td>
+      </tr>
+    `)
+    .join('');
+
+  const fullTableHtml = `
+    <div class="table-responsive">
+      <table id="tabela-cursos-professor" class="table table-bordered">
+        ${tableCaption}
+        ${tableHeader}
+        <tbody>${tableRows}</tbody>
+      </table>
+    </div>
+  `;
+
+  containerEl.innerHTML = fullTableHtml;
+
+  // Scroll para exibir a tabela
+  containerEl.scrollIntoView({ behavior: 'smooth' });
+}
+
 // opcional para debug no console
 window.renderTabelaProfessores = renderTabelaProfessores;

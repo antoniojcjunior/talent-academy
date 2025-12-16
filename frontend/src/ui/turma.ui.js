@@ -1,4 +1,35 @@
 import { escapeHtml, formatarDataBR } from '../utils/util.util.js';
+import { renderModalidadesIcons } from '../utils/renderModalidadesIcons.js';
+
+function getClassByStatus(statusName) {
+    if (!statusName) {
+        return 'status-default'; // Retorna classe neutra se for nulo/vazio
+    }
+
+    // 1. Remove acentos (ex: Concluída -> Concluida)
+    // 2. Converte para maiúsculas (ex: Concluida -> CONCLUIDA)
+    // 3. Remove espaços extras
+    const normalizedStatus = statusName
+        .normalize('NFD') // Normaliza para decompor caracteres (separar acentos)
+        .replace(/[\u0300-\u036f]/g, "") // Remove os diacríticos (acentos)
+        .toUpperCase()
+        .trim();
+    
+    switch (normalizedStatus) {
+        case 'EM ANDAMENTO':
+            return 'status-warning';
+        case 'PREVISTA':
+            return 'status-info';
+        case 'CONFIRMADA':
+            return 'status-success';
+        case 'CONCLUIDA': // Combina com 'Concluída' após a normalização
+            return 'status-secondary';
+        case 'CANCELADA':
+            return 'status-danger';
+        default:
+            return 'status-default'; 
+    }
+}
 
 export function renderTabelaTurmas(containerEl, turmas) {
   if (!containerEl) return;
@@ -34,36 +65,52 @@ export function renderTabelaTurmas(containerEl, turmas) {
         <th class="text-center">Início</th>
         <th class="text-center">Fim</th>
         <th class="text-center">Local</th>
+        <th class="text-center">Modalidade</th>
+        <th class="text-center">Status</th>
         <th class="text-center">Ações</th>
       </tr>
     </thead>
   `;
 
   const tableRows = turmas
-    .map(p => `
-    <tr>
-      <td class="col-left">${escapeHtml(String(p.curso_nome ?? '').toUpperCase())}</td>
-      <td class="text-center">${escapeHtml(String(p.professor_nome ?? ''))}</td>
-      <td class="col-left">${formatarDataBR(String(p.data_inicio ?? ''))}</td>
-      <td class="col-left">${formatarDataBR(String(p.data_fim ?? ''))}</td>
-      <td class="text-center">${escapeHtml(String(p.cidade_nome ?? ''))}</td>
-      <td class="text-center acoes">
-        <div class="acoes-wrapper d-inline-flex gap-2 align-items-center">
-          <button class="btn-edit" data-id="${p.id}" data-nome="${escapeHtml(p.curso_nome ?? '')}" title="Editar">
-            <div class="acoes-icone">
-            <i class="bi bi-pencil"></i>
-            </div>
-          </button>
-          <button class="btn-detail" data-id="${p.id}" data-nome="${escapeHtml(p.curso_nome ?? '')}" title="Detalhar">
-            <div class="acoes-icone">
-            <i class="bi bi-search"></i>
-            </div>
-          </button>
-        </div>
-      </td>
-    </tr>
-    `)
-    .join('');
+  .map(p => {
+    const modalidadesParaRenderizar = p.modalidade_id != null
+      ? [p.modalidade_id]
+      : [];
+console.log(p);
+    return `
+      <tr>
+        <td class="col-left">${escapeHtml(String(p.curso_nome ?? '').toUpperCase())}</td>
+        <td class="text-center">${escapeHtml(String(p.professor_nome ?? ''))}</td>
+        <td class="col-left">${formatarDataBR(String(p.data_inicio ?? ''))}</td>
+        <td class="col-left">${formatarDataBR(String(p.data_fim ?? ''))}</td>
+        <td class="text-center">${escapeHtml(String(p.cidade_nome ?? ''))}</td>
+        <td class="text-center">
+          ${renderModalidadesIcons(modalidadesParaRenderizar)}
+        </td>
+        <td class="text-center">
+          <span class="status-badge ${getClassByStatus(p.status_nome)}">
+            ${escapeHtml(String(p.status_nome ?? ''))}
+          </span>
+        </td>
+        <td class="text-center acoes">
+          <div class="acoes-wrapper d-inline-flex gap-2 align-items-center">
+            <button class="btn-edit" data-id="${p.id}" data-nome="${escapeHtml(p.curso_nome ?? '')}" title="Editar">
+              <div class="acoes-icone">
+                <i class="bi bi-pencil"></i>
+              </div>
+            </button>
+            <button class="btn-detail" data-id="${p.id}" data-nome="${escapeHtml(p.curso_nome ?? '')}" title="Detalhar">
+              <div class="acoes-icone">
+                <i class="bi bi-search"></i>
+              </div>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  })
+  .join('');
 
   const fullTableHtml = `
     <div class="table-responsive">

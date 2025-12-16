@@ -56,3 +56,30 @@ export async function getProfessorDetalhado(id) {
     throw err;
   }
 }
+
+//cursos que o professor ministra
+export async function getCursosDoProfessor(id) {
+  if (!id) {
+    throw new Error('ID do professor não informado.');
+  }
+
+  const url = `${API_BASE}/api/professores/${encodeURIComponent(id)}/cursos`;
+
+  try {
+    const resp = await fetch(url);
+
+    if (resp.status === 404) {
+      // pode acontecer se você decidir validar professor antes no backend
+      throw new Error('Professor não encontrado.');
+    }
+
+    if (!resp.ok) {
+      throw new Error(`Erro ao buscar cursos do professor: ${resp.status}`);
+    }
+
+    return await resp.json(); // esperado: { cursos: [...] }
+  } catch (err) {
+    console.error('Falha em getCursosDoProfessor():', err);
+    throw err;
+  }
+}

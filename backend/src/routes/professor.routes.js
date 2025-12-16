@@ -97,7 +97,7 @@ router.get('/', async (req, res) => {
 // NÃO filtra por status (traz ativo ou inativo)
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
-  console.log('Detalhar professor recebido. ID:', id);
+  //console.log('Detalhar professor recebido. ID:', id);
 
   try {
     const sql = `
@@ -135,6 +135,26 @@ router.get('/:id', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Erro ao detalhar professor' });
+  }
+});
+
+// GET /api/professores/:id/cursos  (listar cursos do professor)
+router.get('/:id/cursos', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const sqlCursos = `
+      SELECT c.id, c.nome, c.carga_horaria_horas, c.valor_padrao_inscricao
+      FROM professores_cursos pc
+      JOIN cursos c ON c.id = pc.curso_id
+      WHERE pc.professor_id = $1
+      ORDER BY c.nome
+    `;
+    const cursosResult = await pool.query(sqlCursos, [id]);
+    return res.json({ cursos: cursosResult.rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao listar cursos do professor' });
   }
 });
 

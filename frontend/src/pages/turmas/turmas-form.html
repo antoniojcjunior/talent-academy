@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Talent Academy - Cadastro de Turma</title>
+  <link rel="icon" type="image/png" href="../../../favicon-ta.png">
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+    crossorigin="anonymous"
+    onerror="this.removeAttribute('integrity'); this.href='../../../assets/lib/bootstrap/bootstrap.min.5.3.3.css';"/>
+  <link 
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.bootstrap5.css"
+    integrity="sha384-0BhIWKcZqG5KR1KTIeRg9FC62RTDWuUeyR1dsP2sv0fHx9X4+wOhEyRj4QN+7GAq"
+    crossorigin="anonymous"
+    onerror="this.removeAttribute('integrity'); this.href='../../../assets/lib/tom-select/tom-select.2.3.1.css';"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="../../../assets/css/main.css">
+  <link rel="stylesheet" href="../../../assets/css/sections/sidebar.css">
+</head>
+<body data-page="turmas-form" class="bg-body-tertiary">
+  <!-- Barra superior -->
+  <nav class="navbar navbar-dark bg-dark shadow-sm">
+    <div class="container-fluid d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-0">
+            <button id="toggleSidebar" class="btn btn-link btn-lg text-light me-3">
+            <i class="bi bi-list"></i>
+            </button>
+            <span class="navbar-brand d-flex align-items-center gap-2">
+                <span class="fw-bold">Gestão Acadêmica</span>
+                <span class="badge bg-primary px-2 py-1 rounded">Talent Academy</span>
+            </span>
+        </div>
+      <div class="d-flex align-items-center gap-3">
+        <span class="text-light small">Antonio Jr</span>
+        <button class="btn btn-outline-light btn-sm">Sair</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid p-0"> 
+    <div class="d-flex">
+      <!-- Sidebar -->
+      <aside id="sidebar" class="sidebar-dark min-vh-100 py-3">
+        <nav class="nav flex-column small sidebar-menu">
+          <a class="nav-link d-flex align-items-center gap-2" href="../index.html">
+            <i class="bi bi-house-door"></i>
+            <span class="sidebar-text">Início</span>
+            </a>
+          <hr class="my-3">
+          <span class="text-uppercase sidebar-title fw-semibold mb-2 px-3">
+            Cadastros
+          </span>
+          <a class="nav-link d-flex align-items-center gap-2" href="../cursos/cursos.html">
+            <i class="bi bi-journal-bookmark"></i>
+            <span class="sidebar-text">Cursos</span>
+          </a>
+          <a class="nav-link d-flex align-items-center gap-2" href="../professores/professores.html">
+            <i class="bi bi-person-badge"></i>
+            <span class="sidebar-text">Professores</span>
+          </a>
+          <a class="nav-link d-flex align-items-center gap-2" href="../locais/locais.html">
+            <i class="bi bi-geo-alt"></i>
+            <span class="sidebar-text">Locais</span>
+          </a>
+          <hr class="my-3">
+          <span class="text-uppercase sidebar-title fw-semibold mb-2 px-3">
+            Turmas
+          </span>
+          <a class="nav-link d-flex align-items-center gap-2" href="../turmas/turmas.html">
+            <i class="bi bi-people"></i>
+            <span class="sidebar-text">Turmas</span>
+          </a>
+        </nav>
+      </aside>
+
+      <!-- Conteúdo principal -->
+      <main class="flex-grow-1 p-4">
+        <!-- Cabeçalho da tela -->
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-4">
+          <div>
+            <h1 class="h4 mb-0">Cadastro de Turma</h1>
+            <small class="text-muted">Preencha os dados abaixo para cadastrar ou alterar uma turma.</small>
+          </div>
+        </div>
+
+        <!-- Formulário de cadastro -->
+        <div class="card mb-3">
+          <div class="card-body">
+            <form id="turma-form">
+              
+              <!-- Linha 1: Nome do Curso e Status -->
+              <div class="row mb-3">
+                <div class="col-sm-12 col-md-6 col-lg-9">
+                  <label for="turma-curso" class="form-label form-label-sm">Nome do Curso <span class="text-danger">*</span></label>
+                  <select 
+                    class="form-select" 
+                    id="turma-curso" 
+                    name="curso_id"
+                    required>
+                    <option value="">Selecione um curso</option>
+                    <!-- Opções preenchidas por JavaScript no futuro -->
+                  </select>
+                </div>
+
+                <div class="col-sm-12 col-md-6 col-lg-3">
+                  <label for="turma-status" class="form-label form-label-sm">Status da Turma <span class="text-danger">*</span></label>
+                  <select 
+                    class="form-select" 
+                    id="turma-status" 
+                    name="status"
+                    required>
+                    <option value="">Selecione</option>
+                    <option value="planejamento">Planejamento</option>
+                    <option value="andamento">Em Andamento</option>
+                    <option value="finalizada">Finalizada</option>
+                    <option value="cancelada">Cancelada</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Linha 2: Professor e Local -->
+              <div class="row mb-3">
+                <div class="col-sm-12 col-md-6 col-lg-6">
+                  <label for="turma-professor" class="form-label form-label-sm">Nome do Professor <span class="text-danger">*</span></label>
+                  <select 
+                    class="form-select" 
+                    id="turma-professor" 
+                    name="professor_id"
+                    required>
+                    <option value="">Selecione um professor</option>
+                    <!-- Opções preenchidas por JavaScript no futuro -->
+                  </select>
+                </div>
+
+                <div class="col-sm-12 col-md-6 col-lg-6">
+                  <label for="turma-local" class="form-label form-label-sm">Nome do Local <span class="text-danger">*</span></label>
+                  <select 
+                    class="form-select" 
+                    id="turma-local" 
+                    name="local_id"
+                    required>
+                    <option value="">Selecione um local</option>
+                    <!-- Opções preenchidas por JavaScript no futuro -->
+                  </select>
+                </div>
+              </div>
+
+              <!-- Linha 3: Período, Horário e Modalidade -->
+              <div class="row mb-3">
+                <div class="col-sm-12 col-md-8 col-lg-4">
+                  <label for="turma-periodo" class="form-label form-label-sm">Período <span class="text-danger">*</span></label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="turma-periodo" 
+                    name="periodo" 
+                    placeholder="Ex.: 01/01/2024 a 31/03/2024"
+                    required>
+                </div>
+
+                <div class="col-sm-12 col-md-4 col-lg-3">
+                  <label for="turma-horario" class="form-label form-label-sm">Horário <span class="text-danger">*</span></label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="turma-horario" 
+                    name="horario" 
+                    placeholder="Ex.: 19:00 a 21:00"
+                    required>
+                </div>
+
+                <div class="col-sm-12 col-md-6 col-lg-3">
+                  <label for="turma-modalidade" class="form-label form-label-sm">Modalidade <span class="text-danger">*</span></label>
+                  <select 
+                    class="form-select" 
+                    id="turma-modalidade" 
+                    name="modalidade_id"
+                    required>
+                    <option value="">Selecione</option>
+                    <!-- Opções preenchidas por JavaScript no futuro -->
+                  </select>
+                </div>
+              </div>
+
+              <!-- Linha 4: Dias da Semana -->
+              <div class="row mb-3">
+                <div class="col-12">
+                  <label class="form-label form-label-sm">Dias da Semana <span class="text-danger">*</span></label>
+                  <div class="d-flex flex-wrap gap-3">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="turma-seg" name="dias_semana" value="seg">
+                      <label class="form-check-label" for="turma-seg">Segunda</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="turma-ter" name="dias_semana" value="ter">
+                      <label class="form-check-label" for="turma-ter">Terça</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="turma-qua" name="dias_semana" value="qua">
+                      <label class="form-check-label" for="turma-qua">Quarta</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="turma-qui" name="dias_semana" value="qui">
+                      <label class="form-check-label" for="turma-qui">Quinta</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="turma-sex" name="dias_semana" value="sex">
+                      <label class="form-check-label" for="turma-sex">Sexta</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="turma-sab" name="dias_semana" value="sab">
+                      <label class="form-check-label" for="turma-sab">Sábado</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="turma-dom" name="dias_semana" value="dom">
+                      <label class="form-check-label" for="turma-dom">Domingo</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Linha 5: Custo Professor e Valor Negociado -->
+              <div class="row mb-3">
+                <div class="col-sm-12 col-md-6 col-lg-6">
+                  <label for="turma-custo-professor" class="form-label form-label-sm">Custo Professor</label>
+                  <input 
+                    type="number" 
+                    class="form-control" 
+                    id="turma-custo-professor" 
+                    name="custo_professor" 
+                    placeholder="Ex.: 1500.00"
+                    step="0.01"
+                    min="0">
+                </div>
+
+                <div class="col-sm-12 col-md-6 col-lg-6">
+                  <label for="turma-valor-negociado" class="form-label form-label-sm">Valor Negociado Prof.</label>
+                  <input 
+                    type="number" 
+                    class="form-control" 
+                    id="turma-valor-negociado" 
+                    name="valor_negociado_professor" 
+                    placeholder="Ex.: 1800.00"
+                    step="0.01"
+                    min="0">
+                </div>
+              </div>
+
+              <!-- Ações (Botões) -->
+              <div class="row">
+                <div class="col-12 d-flex justify-content-end gap-2">
+                  <a href="turmas.html" class="btn btn-outline-secondary btn-sm bg-light">Cancelar</a>
+                  <button type="submit" class="btn btn-primary btn-sm">Salvar</button>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script
+    src="https://unpkg.com/vanilla-masker@1.1.1/build/vanilla-masker.min.js"
+    integrity="sha384-12XSlvcHmo+GznHloktY+lT6qPgXYbPqMFGiY0JflahmzOxYAkfrK+YzvoBAH+qQ"
+    crossorigin="anonymous">
+  </script>
+  <script 
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+  crossorigin="anonymous">
+  </script>
+   <script 
+  src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"
+  integrity="sha384-cnROoUgVILyibe3J0zhzWoJ9p2WmdnK7j/BOTSWqVDbC1pVw2d+i6Q/1ESKJKCYf"
+  crossorigin="anonymous"
+></script>
+
+<script>
+  if (!window.bootstrap || !window.bootstrap.Popover) {
+    console.warn('CDN do Bootstrap falhou. Carregando versão local...');
+    const sc = document.createElement('script');
+    sc.src = '../../../assets/lib/bootstrap/bootstrap.bundle.min-5.3.3.js';
+    document.head.appendChild(sc);
+  }
+</script>
+<script>
+  if (!window.TomSelect) {
+    console.warn('CDN do Tom Select falhou. Carregando versão local...');
+    const s = document.createElement('script');
+    s.src = '../../../assets/lib/tom-select/tom-select-2.3.1.min.js';
+    document.head.appendChild(s);
+  }
+</script>
+
+<script>
+  if (!window.VMasker) {
+    console.warn('CDN do Vanilla Masker falhou. Carregando versão local...');
+    const s = document.createElement('script');
+    s.src = '../../../assets/lib/vanilla-masker/vanilla-masker-1.1.1.min.js';
+    document.head.appendChild(s);
+  }
+</script>
+
+<script defer type="module" src="../../layout/sidebar.js"></script>
+<script type="module" src="../../utils/modal-global.js"></script>
+</body>
+</html>

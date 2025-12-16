@@ -1,5 +1,4 @@
-import { getProfessores, getProfessorDetalhado } from '../api/professor.api.js';
-import { getCidadePorId } from '../api/cidade.api.js';
+import { getProfessores, getProfessorDetalhado, getCursosDoProfessor } from '../api/professor.api.js';
 import { renderTabelaProfessores } from '../ui/professor.ui.js';
 
 export async function executarPesquisaProfessores() {
@@ -48,4 +47,16 @@ export async function executarPesquisaProfessores() {
 export async function getProfessorPorId(id) {
   const prof = await getProfessorDetalhado(id);
   return prof || null;
+}
+
+// buscar cursos do professor
+export async function getCursosDoProfessorPorId(id) {
+  const data = await getCursosDoProfessor(id);
+  return data?.cursos || [];
+}
+// função que retorna detalhes do professor + cursos
+export async function executarPesquisaProfessorDetalhado(id) {
+  const professor = await getProfessorPorId(id);
+  const cursos = await getCursosDoProfessorPorId(id);
+  return { professor, cursos };
 }

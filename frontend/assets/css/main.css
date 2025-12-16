@@ -90,3 +90,92 @@ h1,
     color: white;
     border-color: #007bff;
 }
+
+/* --- 1. ESTILO BASE DA PÍLULA (status-badge) --- */
+/* Esta classe define o formato arredondado e o layout */
+.status-badge {
+    /* Formato da pílula */
+    display: inline-block;
+    padding: 4px 10px;          /* Espaçamento interno */
+    border-radius: 20px;        /* Deixa o fundo completamente arredondado */
+    
+    /* Tipografia e aparência */
+    font-size: 12px;            /* Tamanho da fonte menor para melhor encaixe */
+    font-weight: bold;          /* Texto em negrito para destaque */
+    text-align: center;
+    line-height: 1.2;           /* Ajuste fino na altura da linha */
+    white-space: nowrap;        /* Impede que o texto quebre a linha */
+    text-transform: uppercase;  /* Opcional: Deixa o texto do status em caixa alta */
+}
+
+/* --- 2. ESTILOS ESPECÍFICOS POR STATUS --- */
+/* --- 1. ESTILO BASE DA PÍLULA (status-badge) --- */
+/* Esta classe define o formato arredondado e o layout */
+.status-badge {
+    /* Formato da pílula */
+    display: inline-block;
+    padding: 4px 10px;          /* Espaçamento interno */
+    border-radius: 20px;        /* Deixa o fundo completamente arredondado */
+    
+    /* Tipografia e aparência */
+    font-size: 12px;            /* Tamanho da fonte menor para melhor encaixe */
+    font-weight: bold;          /* Texto em negrito para destaque */
+    text-align: center;
+    line-height: 1.2;           
+    white-space: nowrap;        
+    text-transform: uppercase;  
+}
+
+/* --- 2. CLASSES DE COR DINÂMICAS (Sem Borda) --- */
+/* --- 1. ESTILO BASE DA PÍLULA (status-badge) --- */
+.status-badge {
+    /* Formato da pílula */
+    display: inline-block;
+    padding: 4px 10px;          /* Espaçamento interno */
+    border-radius: 20px;        /* Deixa o fundo completamente arredondado */
+    
+    /* Tipografia e aparência */
+    font-size: 12px;            
+    font-weight: bold;          
+    text-align: center;
+    line-height: 1.2;           
+    white-space: nowrap;        
+    text-transform: uppercase;  
+}
+
+/* --- 2. ESTILOS ESPECÍFICOS POR STATUS --- */
+/* 🟢 CONFIRMADA (Classe JS: status-success) */
+.status-success {
+    background-color: #e6ffed; 
+    color: #008000;          
+}
+
+/* 🟠 EM ANDAMENTO (Classe JS: status-warning) */
+.status-warning {
+    background-color: #fff8e1; 
+    color: #ff9800;          
+}
+
+/* 🔵 PREVISTA (Classe JS: status-info) */
+.status-info {
+    background-color: #e3f2fd; 
+    color: #2196f3;          
+}
+
+/* ⚫ CONCLUÍDA (Classe JS: status-secondary) */
+.status-secondary {
+    background-color: #eceff1; 
+    color: #546e7a;          
+}
+
+/* 🔴 CANCELADA (Classe JS: status-danger) */
+.status-danger {
+    background-color: #ffebee; 
+    color: #f44336;          
+}
+
+/* (Opcional) Classe para status não mapeados ou nulos */
+.status-default {
+    background-color: #f7f7f7; 
+    color: #333;          
+}

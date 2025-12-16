@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Talent Academy</title>
+  <title>Talent Academy - Cadastro de Curso</title>
   <link rel="icon" type="image/png" href="../../../favicon-ta.png">
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -21,12 +21,11 @@
   <link rel="stylesheet" href="../../../assets/css/main.css">
   <link rel="stylesheet" href="../../../assets/css/sections/sidebar.css">
 </head>
-<body data-page="cursos-pesquisa" class="bg-body-tertiary">
+<body data-page="cursos-form" class="bg-body-tertiary">
   <!-- Barra superior -->
   <nav class="navbar navbar-dark bg-dark shadow-sm">
     <div class="container-fluid d-flex align-items-center justify-content-between">
-        <div class="d-flex align-items-center gap-0"> <!-- bloco da esquerda: sanduíche + nome do sistema -->
-            <!-- Botão Sanduíche -->
+        <div class="d-flex align-items-center gap-0">
             <button id="toggleSidebar" class="btn btn-link btn-lg text-light me-3">
             <i class="bi bi-list"></i>
             </button>
@@ -35,37 +34,38 @@
                 <span class="badge bg-primary px-2 py-1 rounded">Talent Academy</span>
             </span>
         </div>
-      <div class="d-flex align-items-center gap-3"> <!-- botao sair -->
+      <div class="d-flex align-items-center gap-3">
         <span class="text-light small">Antonio Jr</span>
         <button class="btn btn-outline-light btn-sm">Sair</button>
       </div>
     </div>
   </nav>
+
   <div class="container-fluid p-0"> 
     <div class="d-flex">
       <!-- Sidebar -->
       <aside id="sidebar" class="sidebar-dark min-vh-100 py-3">
         <nav class="nav flex-column small sidebar-menu">
           <a class="nav-link d-flex align-items-center gap-2" href="../index.html">
-          <i class="bi bi-house-door"></i>
-          <span class="sidebar-text">Início</span>
-          </a>
+            <i class="bi bi-house-door"></i>
+            <span class="sidebar-text">Início</span>
+            </a>
           <hr class="my-3">
           <span class="text-uppercase sidebar-title fw-semibold mb-2 px-3">
             Cadastros
           </span>
-          <a class="nav-link d-flex align-items-center gap-2 active" href="../cursos/cursos.html">
+          <a class="nav-link d-flex align-items-center gap-2 active" href="cursos.html">
             <i class="bi bi-journal-bookmark"></i>
             <span class="sidebar-text">Cursos</span>
-            </a>
+          </a>
           <a class="nav-link d-flex align-items-center gap-2" href="../professores/professores.html">
             <i class="bi bi-person-badge"></i>
             <span class="sidebar-text">Professores</span>
-            </a>
+          </a>
           <a class="nav-link d-flex align-items-center gap-2" href="../locais/locais.html">
             <i class="bi bi-geo-alt"></i>
             <span class="sidebar-text">Locais</span>
-            </a>
+          </a>
           <hr class="my-3">
           <span class="text-uppercase sidebar-title fw-semibold mb-2 px-3">
             Turmas
@@ -73,59 +73,95 @@
           <a class="nav-link d-flex align-items-center gap-2" href="../turmas/turmas.html">
             <i class="bi bi-people"></i>
             <span class="sidebar-text">Turmas</span>
-            </a>
+          </a>
         </nav>
       </aside>
+
       <!-- Conteúdo principal -->
       <main class="flex-grow-1 p-4">
         <!-- Cabeçalho da tela -->
         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-4">
           <div>
-            <h1 class="h4 mb-0">Cursos</h1>
-            <small class="text-muted">Cadastro e manutenção de cursos.</small>
+            <h1 class="h4 mb-0">Cadastro de Curso</h1>
+            <small class="text-muted">Preencha os dados abaixo para cadastrar ou alterar um curso.</small>
           </div>
-          <button class="btn btn-primary">
-            Novo curso
-          </button>
         </div>
-        <!-- Filtros / barra de ações -->
-       <form>
+
+        <!-- Formulário de cadastro -->
         <div class="card mb-3">
-          <div class="card-body py-3">
-            <div class="row primeira g-2 mb-3 align-items-end">
-              <div class="col-sm-6 col-md-4 col-lg-8">
-                <label class="form-label form-label-sm">Nome do curso</label>
-                <input id="nomeCurso" type="text" class="form-control form-control-sm" placeholder="Digite o nome do curso">
+          <div class="card-body">
+            <form id="curso-form">
+              
+              <!-- Linha 1: Nome do Curso -->
+              <div class="row mb-3">
+                <div class="col-12">
+                  <label for="curso-nome" class="form-label form-label-sm">Nome <span class="text-danger">*</span></label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="curso-nome" 
+                    name="nome" 
+                    placeholder="Ex.: Python Avançado, Gestão de Projetos"
+                    required>
+                </div>
               </div>
-              <div class="col-sm-6 col-md-4 col-lg-4">
-                <label class="form-label form-label-sm">Modalidade</label>
-                <select class="form-select form-select-sm" id="modalidade" name="modalidade" data-placeholder="Selecione a modalidade">
-                  <option value="">Selecione</option>
-                </select>
+
+              <!-- Linha 2: Carga horária, Valor inscrição e Modalidade -->
+              <div class="row mb-3">
+                <div class="col-sm-12 col-md-6 col-lg-6">
+                  <label for="curso-carga-horaria" class="form-label form-label-sm">Carga horária (horas) <span class="text-danger">*</span></label>
+                  <input 
+                    type="number" 
+                    class="form-control" 
+                    id="curso-carga-horaria" 
+                    name="carga_horaria" 
+                    placeholder="Ex.: 40, 80"
+                    step="1"
+                    min="0"
+                    required>
+                </div>
+
+                <div class="col-sm-12 col-md-4 col-lg-2">
+                  <label for="curso-valor-inscricao" class="form-label form-label-sm">Valor inscrição <span class="text-danger">*</span></label>
+                  <input 
+                    type="number" 
+                    class="form-control" 
+                    id="curso-valor-inscricao" 
+                    name="valor_inscricao" 
+                    placeholder="Ex.: 500.00"
+                    step="0.01"
+                    min="0"
+                    required>
+                </div>
+
+                <div class="col-sm-12 col-md-2 col-lg-4">
+                  <label for="curso-modalidade" class="form-label form-label-sm">Modalidade <span class="text-danger">*</span></label>
+                  <select 
+                    class="form-select" 
+                    id="curso-modalidade" 
+                    name="modalidade_id"
+                    required>
+                    <option value="">Selecione</option>
+                    <!-- Opções preenchidas por JavaScript no futuro -->
+                  </select>
+                </div>
               </div>
-            </div>
-            <div class="row segunda g-2 align-items-end justify-content-between">
-             <div class="col-sm-6 col-md-4 col-lg-6">
-                <label class="form-label form-label-sm">Professor:</label>
-                <select class="form-select form-select-sm" id="professor" name="professor" data-placeholder="Selecione o professor">
-                  <option value="">Selecione</option>
-                </select>
-             </div>
-              <div class="row g-2 align-items-end justify-content-end">
-              <div class="col-auto">
-                <button type="submit" class="btn btn-outline-secondary btn-sm">Pesquisar</button>
-                <button id="Limpar" type="button" class="btn btn-outline-secondary btn-sm bg-light">Limpar</button>
+
+              <!-- Ações (Botões) -->
+              <div class="row">
+                <div class="col-12 d-flex justify-content-end gap-2">
+                  <a href="cursos.html" class="btn btn-outline-secondary btn-sm bg-light">Cancelar</a>
+                  <button type="submit" class="btn btn-primary btn-sm">Salvar</button>
+                </div>
               </div>
-            </div>
-            </div>
-            </div>
+
+            </form>
           </div>
-       </form>
-        <!-- Tabela -->
-        <section id="resultados-tabela-cursos" class="mt-3 p-2"></section>
+        </div>
       </main>
     </div>
   </div>
+
   <script
     src="https://unpkg.com/vanilla-masker@1.1.1/build/vanilla-masker.min.js"
     integrity="sha384-12XSlvcHmo+GznHloktY+lT6qPgXYbPqMFGiY0JflahmzOxYAkfrK+YzvoBAH+qQ"
@@ -136,14 +172,13 @@
   integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
   crossorigin="anonymous">
   </script>
-  <!-- biblioteca Tom Select -->
    <script 
   src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"
   integrity="sha384-cnROoUgVILyibe3J0zhzWoJ9p2WmdnK7j/BOTSWqVDbC1pVw2d+i6Q/1ESKJKCYf"
   crossorigin="anonymous"
 ></script>
+
 <script>
-  // Verifica se o Bootstrap não carregou — CDN falhou ou SRI bloqueou
   if (!window.bootstrap || !window.bootstrap.Popover) {
     console.warn('CDN do Bootstrap falhou. Carregando versão local...');
     const sc = document.createElement('script');
@@ -151,7 +186,25 @@
     document.head.appendChild(sc);
   }
 </script>
+<script>
+  if (!window.TomSelect) {
+    console.warn('CDN do Tom Select falhou. Carregando versão local...');
+    const s = document.createElement('script');
+    s.src = '../../../assets/lib/tom-select/tom-select-2.3.1.min.js';
+    document.head.appendChild(s);
+  }
+</script>
+
+<script>
+  if (!window.VMasker) {
+    console.warn('CDN do Vanilla Masker falhou. Carregando versão local...');
+    const s = document.createElement('script');
+    s.src = '../../../assets/lib/vanilla-masker/vanilla-masker-1.1.1.min.js';
+    document.head.appendChild(s);
+  }
+</script>
+
 <script defer type="module" src="../../layout/sidebar.js"></script>
 <script type="module" src="../../utils/modal-global.js"></script>
-<script defer type="module" src="../../main/curso.main.js"></script>
 </body>
+</html>

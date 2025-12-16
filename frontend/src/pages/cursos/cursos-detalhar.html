@@ -110,7 +110,10 @@
               </div>
               <div class="col-sm-12 col-md-2 col-lg-4">
                 <label class="form-label form-label-sm">Modalidade</label>
-                <p id="curso-modalidade" class="p-2 border rounded form-control-plaintext">Carregando...</p>
+                <!-- Container para renderizar os ícones via innerHTML no curso.main.js -->
+                <div id="curso-modalidade" class="p-2 d-flex align-items-center gap-2 flex-wrap">
+                  <span style="opacity:.6;">Carregando...</span>
+                </div>
               </div>
             </div>
             <!-- Tabela Professores Curso -->

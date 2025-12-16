@@ -1,6 +1,7 @@
 import { carregarSelectCidade, carregarSelect } from '../utils/carregar-select.util.js';
-import { executarPesquisaProfessores, getProfessorPorId } from '../service/professor.service.js';
+import { executarPesquisaProfessores, executarPesquisaProfessorDetalhado } from '../service/professor.service.js';
 import { formatarMoedaBR, formatarDataBR, formatCpf } from '../utils/util.util.js';
+import { renderTabelaCursosDoProfessor } from '../ui/professor.ui.js';
 
 import { API_BASE } from '../config.js';
 
@@ -62,18 +63,37 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.location.href = 'professores.html';
     return;
     }
-    const professor = await getProfessorPorId(id);
-    console.log('Página de detalhamento de professor carregada. ID:', id);
-      // Preencher o HTML 
-    document.getElementById('professor-nome').textContent = professor.nome || '-';
-    document.getElementById('professor-cpf').textContent = formatCpf(professor.cpf) || '-';
-    document.getElementById('professor-telefone').textContent = professor.telefone || '-';
-    document.getElementById('professor-valor-hora').textContent = professor.valor_hora_aula != null ? `R$ ${Number(professor.valor_hora_aula).toFixed(2)}` : '-';
-    document.getElementById('professor-cidade').textContent = professor.cidade_nome || '-';
-    document.getElementById('professor-data-nasc').textContent = formatarDataBR(professor.data_nascimento) || '-';
-    document.getElementById('professor-status').textContent = professor.status || '-';
-    document.getElementById('professor-valor-hora').textContent = 
-    professor.valor_hora_aula != null ? formatarMoedaBR(professor.valor_hora_aula) : '-';
+    try {
+      // service retorna { professor, cursos }
+      const { professor, cursos } = await executarPesquisaProfessorDetalhado(id);
+
+      if (!professor) {
+        window.location.href = 'professores.html';
+        return;
+      }
+
+      console.log('Cursos do professor:', cursos);
+      console.log('Página de detalhamento de professor carregada. ID:', id);
+
+      // Preencher o HTML
+      document.getElementById('professor-nome').textContent = professor.nome || '-';
+      document.getElementById('professor-cpf').textContent = formatCpf(professor.cpf) || '-';
+      document.getElementById('professor-telefone').textContent = professor.telefone || '-';
+      document.getElementById('professor-cidade').textContent = professor.cidade_nome || '-';
+      document.getElementById('professor-data-nasc').textContent = formatarDataBR(professor.data_nascimento) || '-';
+      document.getElementById('professor-status').textContent = professor.status || '-';
+      document.getElementById('professor-valor-hora').textContent =
+      professor.valor_hora_aula != null ? formatarMoedaBR(professor.valor_hora_aula) : '-';
+
+      const tabelaCursosContainer = document.getElementById('tabela-cursos-professor');
+      if (tabelaCursosContainer) {
+        renderTabelaCursosDoProfessor(tabelaCursosContainer, cursos);
+        tabelaCursosContainer.dataset.loaded = 'true'; // opcional, debug
+      }
+    } catch (err) {
+      console.error('Erro ao carregar detalhamento do professor:', err);
+      //window.location.href = 'professores.html';
+    }
 
   }
 });
